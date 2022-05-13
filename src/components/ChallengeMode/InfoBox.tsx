@@ -3,7 +3,8 @@ import { CHALLENGE_WORDS_NUMBER } from "./Challenge";
 
 const InfoBox:React.FC<{
     startGame: () => void
-}> = ({startGame}) => {
+    gameIsReady: boolean
+}> = ({startGame, gameIsReady}) => {
     return (
         <>
             <Text>
@@ -11,7 +12,7 @@ const InfoBox:React.FC<{
                 fast as possible! Total of {CHALLENGE_WORDS_NUMBER} words will be shown - the more
                 words you fill, the higher your score.{" "}
             </Text>
-            <Button colorScheme="blue" mt={4} onClick={() => startGame()}>
+            <Button colorScheme="blue" mt={4} onClick={() => startGame()} isLoading={!gameIsReady}>
                 Begin
             </Button>
         </>

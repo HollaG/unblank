@@ -5,6 +5,7 @@ import {
     useColorModeValue,
     Text,
     Stack,
+    useMediaQuery,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CharacterInput from "./CharacterInput";
@@ -14,6 +15,8 @@ import WordBox from "./WordBox";
 import EndedText from "./EndedText";
 import { createBigIntLiteral } from "typescript";
 import React from "react";
+import ReactDOM from "react-dom";
+import { BrowserView, isMobile, MobileView } from "react-device-detect";
 
 const loadJson = (): Promise<any> => {
     return new Promise((res, rej) => {
@@ -38,21 +41,38 @@ export interface ProgressData {
     numberTimesTried: number; // the number of times the player filled in all the characters.,
     word: string;
     startTimestamp: number;
-    numberMissingCharacters: number
+    numberMissingCharacters: number;
 }
 const Challenge: React.FC = () => {
+
+    /* Fetch the dictionary asynchronously */
     const [gameData, setGameData] = useState<{
         words: string[];
         byLength: { [key: string]: { [key: string]: number } };
     }>();
-    console.log({ gameData });
+
+    const [acceptedWords, setAcceptedWords] = useState<{[key:string]: 1}>();
     useEffect(() => {
-        let loadJsonAsync = async () => {
-            const data = await loadJson();
-            setGameData(data);
-        };
-        loadJsonAsync();
+        // let loadJsonAsync = async () => {
+        //     const data = await loadJson();
+        //     setGameData(data);
+        // };
+        // loadJsonAsync();
+        fetch('./words.json').then(response => response.json()).then(data => setGameData(data))
+        fetch('./words_dictionary.json').then(response => response.json()).then(data => setAcceptedWords(data))
     }, []);
+
+    const gameIsReady = !!gameData && !!acceptedWords;
+
+
+    console.log({acceptedWords})
+    /* Scroll to word box when game starting (only if mobile!) */
+    const wordBoxRef = useRef<HTMLDivElement>(null);
+  
+
+
+ 
+   
 
     const [gameStatus, setGameStatus] = useState(0);
     const inProgress = gameStatus === 1 || gameStatus === 2;
@@ -64,9 +84,10 @@ const Challenge: React.FC = () => {
     */
 
     const startGameCountdown = () => {
+        if (!gameIsReady) return
         setGameStatus(1);
         setCorrectAnswer([""]);
-        wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });
+        isMobile && wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     const startGame = () => {
@@ -93,7 +114,7 @@ const Challenge: React.FC = () => {
                 wordsSkipped: [],
                 progressData: [],
             },
-            wordPlayerData: {}
+            wordPlayerData: {},
         }),
         []
     );
@@ -112,18 +133,36 @@ const Challenge: React.FC = () => {
         defaultValues.currentWordNumber
     );
 
-    const [playerData, setPlayerData] = useState<PlayerData>(defaultValues.playerData);
+    const [playerData, setPlayerData] = useState<PlayerData>(
+        defaultValues.playerData
+    );
 
-    
-    console.log(`The word is %c${currentWord}`, "background: white; color: black;");
+    console.log(
+        `The word is %c${currentWord}`,
+        "background: white; color: black;"
+    );
 
     /* Pick a new word */
     const chooseNewWord = useCallback(() => {
         // pick a random word from the list
-        const randomWord =
-            gameData?.words[
-                Math.floor(Math.random() * gameData?.words.length)
-            ] || "";
+
+        // For NORMAL mode, words allowed are 3-7 characters in length, inclusive
+        // for HARDCORE mode, all words are allowed.
+
+        let type = 0 // todo
+        // 0 = normal, 1 = hardcore
+
+        const wordLength = type === 0 ? Math.floor(Math.random() * (7 - 3 + 1)) + 3 : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
+        const wordsOfThisLength = Object.keys(gameData?.byLength?.[wordLength] || {})
+        const randomWord = wordsOfThisLength?.[Math.floor(Math.random() * wordsOfThisLength.length)];
+
+
+
+
+        // const randomWord =
+        //     gameData?.words[
+        //         Math.floor(Math.random() * gameData?.words.length)
+        //     ] || "";
         setCurrentWord(randomWord);
 
         // pick a random number of characters to remove from the word
@@ -180,19 +219,13 @@ const Challenge: React.FC = () => {
                 startTimestamp: Date.now(),
                 timeTaken: 0,
                 word: randomWord,
-                numberMissingCharacters: numberOfCharactersToRemove
-            }
-        }))
+                numberMissingCharacters: numberOfCharactersToRemove,
+            },
+        }));
     }, [gameData]);
 
     /* Skip current word */
-    const skipWord = () => {
-        // setPlayerData((prevState) => (
-        //      {
-        //         ...prevState,
-        //         wordsSkipped: [...prevState.wordsSkipped, currentWord],
-        //     };
-        // ))
+    const skipWord = () => {      
         setPlayerData((prevState) => ({
             ...prevState,
             wordsSkipped: [...prevState.wordsSkipped, currentWord],
@@ -203,8 +236,8 @@ const Challenge: React.FC = () => {
                 ...prevState[currentWord],
                 skipped: true,
                 timeTaken: Date.now() - prevState[currentWord].startTimestamp,
-            }
-        }))
+            },
+        }));
         progressGame();
     };
 
@@ -243,7 +276,7 @@ const Challenge: React.FC = () => {
                             startTimestamp: Date.now(),
                             timeTaken: 0,
                             word: currentWord,
-                            numberMissingCharacters: correctAnswer.length
+                            numberMissingCharacters: correctAnswer.length,
                         },
                     };
                 } else {
@@ -274,8 +307,9 @@ const Challenge: React.FC = () => {
             console.log(`Checking word ${checkWord}...`);
             // check if the word exists in gameData
 
-            if (gameData?.byLength[currentWord.length][checkWord]) {
-                // exists, answer is correct 
+            const exists = acceptedWords?.[checkWord]; // use the master list
+            if (exists) {
+                // exists, answer is correct
                 /* Note: The 'accepted word' (checkWord) might be different from the original, intended word (currentWord). This is on purpose. */
 
                 setPlayerData((prevState) => ({
@@ -287,8 +321,7 @@ const Challenge: React.FC = () => {
                     [currentWord]: {
                         ...prevState[currentWord],
                         timeTaken:
-                            Date.now()
-                             - prevState[currentWord].startTimestamp,
+                            Date.now() - prevState[currentWord].startTimestamp,
                         skipped: false,
                         word: checkWord,
                     },
@@ -299,7 +332,6 @@ const Challenge: React.FC = () => {
                 // doesn't exist
                 // set to red
                 setAnswerIsWrong(true);
-                
             }
         }
     }, [
@@ -312,7 +344,6 @@ const Challenge: React.FC = () => {
         progressGame,
     ]);
 
-
     /* Reset game back to the start */
     const reset = useCallback(() => {
         setCurrentWord(defaultValues.currentWord);
@@ -324,17 +355,13 @@ const Challenge: React.FC = () => {
         setPlayerData(defaultValues.playerData);
         setWordPlayerData(defaultValues.wordPlayerData);
         setGameStatus(1);
-        setCorrectAnswer([""])
+        setCorrectAnswer([""]);
     }, [defaultValues]);
 
     // Colors
     const mainBoxBackgroundColor = useColorModeValue("blue.100", "gray.700");
 
-
-
-    /* Scroll to word box when game starting */
-    const wordBoxRef = useRef<HTMLDivElement>(null)
-
+    
 
     return (
         <Stack spacing={4} justifyContent="center" pt={6}>
@@ -348,7 +375,7 @@ const Challenge: React.FC = () => {
                 textAlign={"center"}
                 ref={wordBoxRef}
             >
-                {gameStatus === 0 && <InfoBox startGame={startGameCountdown} />}
+                {gameStatus === 0 && <InfoBox startGame={startGameCountdown} gameIsReady={gameIsReady}/>}
                 {gameStatus === 1 && <CountdownBox startGame={startGame} />}
                 {gameStatus === 2 && (
                     <WordBox
@@ -378,14 +405,32 @@ const Challenge: React.FC = () => {
                 <Stack textAlign="center">
                     <Text> Type the missing characters below </Text>
                     <CharacterInput
-                        correctAnswer={correctAnswer}                 
+                        correctAnswer={correctAnswer}
                         inputRef={inputRef}
                         enteredAnswer={enteredAnswer}
                         setEnteredAnswer={setEnteredAnswer}
                         answerIsWrong={answerIsWrong}
                     />
                     <Box>
-                        <Button onClick={() => skipWord()} disabled={gameStatus !== 2}> Skip </Button>
+                        <MobileView>
+                            <SkipButtonPortal>
+                                <Button
+                                    onClick={() => skipWord()}
+                                    disabled={gameStatus !== 2}
+                                    width="100%"
+                                >
+                                    Skip word
+                                </Button>
+                            </SkipButtonPortal>
+                        </MobileView>
+                        <BrowserView>
+                            <Button
+                                onClick={() => skipWord()}
+                                disabled={gameStatus !== 2}                             
+                            >
+                                Skip word
+                            </Button>
+                        </BrowserView>
                     </Box>
                 </Stack>
             )}
@@ -397,9 +442,21 @@ const Challenge: React.FC = () => {
                     accepted.
                 </Text>
             )}
-            {gameStatus === 3 && <EndedText playerData={playerData} wordPlayerData={wordPlayerData} />}
+            {gameStatus === 3 && (
+                <EndedText
+                    playerData={playerData}
+                    wordPlayerData={wordPlayerData}
+                />
+            )}
         </Stack>
     );
 };
 
-export default (Challenge);
+export default Challenge;
+
+const SkipButtonPortal: React.FC = ({ children }) => {
+    return ReactDOM.createPortal(
+        children,
+        document.getElementById("skip-btn-container") || document.body
+    );
+};
