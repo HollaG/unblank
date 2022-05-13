@@ -1,37 +1,48 @@
 import { HStack, PinInput, PinInputField } from "@chakra-ui/react";
+import React from "react";
 import { useEffect, useState } from "react";
 
 const CharacterInput: React.FC<{
     correctAnswer: string[];
-    setCorrectAnswer: React.Dispatch<React.SetStateAction<string[]>>;
-    inputRef: React.RefObject<HTMLInputElement>
-    enteredAnswer: string[],
-    setEnteredAnswer: React.Dispatch<React.SetStateAction<string[]>>
-    answerIsWrong: boolean,
-}> = ({ correctAnswer, setCorrectAnswer, inputRef, enteredAnswer, setEnteredAnswer, answerIsWrong }) => {
 
-    useEffect(() => {
-        if (inputRef.current) {
-            inputRef.current.focus();
-        }
-    }, [correctAnswer, inputRef])
+    inputRef: React.RefObject<HTMLInputElement>;
+    enteredAnswer: string[];
+    setEnteredAnswer: React.Dispatch<React.SetStateAction<string[]>>;
+    answerIsWrong: boolean;
+}> = ({
+    correctAnswer,
+
+    inputRef,
+    enteredAnswer,
+    setEnteredAnswer,
+    answerIsWrong,
+}) => {
+    console.log("DEBUG: CHARACTERINPUT.tsx is RERENDERING!");
+    if (inputRef.current && !enteredAnswer.length) inputRef.current.focus();
 
     const onChange = (e: string) => {
-        setEnteredAnswer(e.split(""))
-        
-    }
+        setEnteredAnswer(e.toLowerCase().split(""));
+    };
 
     // Note: the error border won't be shown if the pininput is focused. Hence, we have to change the focusBorderColor if there is an error.
     return (
         <HStack alignItems="center" justifyContent="center">
-            <PinInput type="alphanumeric" value={enteredAnswer.join("")} onChange={onChange} isInvalid={answerIsWrong} focusBorderColor={answerIsWrong ? "red.500" : "blue.500"}>
+            <PinInput
+                type="alphanumeric"
+                value={enteredAnswer.join("")}
+                onChange={onChange}
+                isInvalid={answerIsWrong}
+                focusBorderColor={answerIsWrong ? "red.500" : "blue.500"}
+            >
                 {correctAnswer.map((char, index) => (
-                    <PinInputField ref={index === 0 ? inputRef : undefined} key={index}/>
+                    <PinInputField
+                        ref={index === 0 ? inputRef : undefined}
+                        key={index}
+                    />
                 ))}
-                
             </PinInput>
         </HStack>
     );
 };
 
-export default CharacterInput;
+export default React.memo(CharacterInput);

@@ -13,6 +13,7 @@ import CountdownBox from "./CountdownBox";
 import WordBox from "./WordBox";
 import EndedText from "./EndedText";
 import { createBigIntLiteral } from "typescript";
+import React from "react";
 
 const loadJson = (): Promise<any> => {
     return new Promise((res, rej) => {
@@ -65,6 +66,7 @@ const Challenge: React.FC = () => {
     const startGameCountdown = () => {
         setGameStatus(1);
         setCorrectAnswer([""]);
+        wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
     const startGame = () => {
@@ -329,8 +331,13 @@ const Challenge: React.FC = () => {
     const mainBoxBackgroundColor = useColorModeValue("blue.100", "gray.700");
 
 
+
+    /* Scroll to word box when game starting */
+    const wordBoxRef = useRef<HTMLDivElement>(null)
+
+
     return (
-        <Stack spacing={4} justifyContent="center">
+        <Stack spacing={4} justifyContent="center" pt={6}>
             <Heading textAlign="center"> Challenge mode </Heading>
 
             <Box
@@ -339,6 +346,7 @@ const Challenge: React.FC = () => {
                 p={8}
                 borderRadius="md"
                 textAlign={"center"}
+                ref={wordBoxRef}
             >
                 {gameStatus === 0 && <InfoBox startGame={startGameCountdown} />}
                 {gameStatus === 1 && <CountdownBox startGame={startGame} />}
@@ -370,8 +378,7 @@ const Challenge: React.FC = () => {
                 <Stack textAlign="center">
                     <Text> Type the missing characters below </Text>
                     <CharacterInput
-                        correctAnswer={correctAnswer}
-                        setCorrectAnswer={setCorrectAnswer}
+                        correctAnswer={correctAnswer}                 
                         inputRef={inputRef}
                         enteredAnswer={enteredAnswer}
                         setEnteredAnswer={setEnteredAnswer}
@@ -395,4 +402,4 @@ const Challenge: React.FC = () => {
     );
 };
 
-export default Challenge;
+export default (Challenge);

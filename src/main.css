@@ -1,0 +1,4 @@
+html,
+body {
+    min-height: calc(100% + 64px + 2.5rem + 40px);
+}
