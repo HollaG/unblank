@@ -410,6 +410,7 @@ const Challenge: React.FC = () => {
                         enteredAnswer={enteredAnswer}
                         setEnteredAnswer={setEnteredAnswer}
                         answerIsWrong={answerIsWrong}
+                        skipWord={skipWord}
                     />
                     <Box>
                         <MobileView>
@@ -419,7 +420,8 @@ const Challenge: React.FC = () => {
                                     disabled={gameStatus !== 2}
                                     width="100%"
                                 >
-                                    Skip word
+                                    Skip word 
+                                    {/* Note: space bar onkeydown detection doesn't work on mobile. */}
                                 </Button>
                             </SkipButtonPortal>
                         </MobileView>
@@ -428,7 +430,7 @@ const Challenge: React.FC = () => {
                                 onClick={() => skipWord()}
                                 disabled={gameStatus !== 2}                             
                             >
-                                Skip word
+                                Skip (or press space)
                             </Button>
                         </BrowserView>
                     </Box>
