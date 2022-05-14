@@ -1,6 +1,6 @@
 import { HStack, PinInput, PinInputField } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { SyntheticEvent } from "react";
+import React, { SyntheticEvent, useCallback } from "react";
 import { useEffect, useState } from "react";
 
 const animationKeyframes = [1, -1, -3, 3, 1, -1, -3, 3, 1];
@@ -23,17 +23,17 @@ const CharacterInput: React.FC<{
     
     if (inputRef.current && !enteredAnswer.length) inputRef.current.focus();
 
-    const onChange = (e: string) => {
+    const onChange = useCallback((e: string) => {
         setEnteredAnswer(e.toLowerCase().split(""));
-    };
+    }, []);
 
     // Doesn't work on mobile!!!
-    const onSpacePressed = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const onSpacePressed = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === " ") {
             // spacebar was pressed, skip
             skipWord();
         }
-    };
+    }, [skipWord]);
     // Note: the error border won't be shown if the pininput is focused. Hence, we have to change the focusBorderColor if there is an error.
 
     let toAnimate = answerIsWrong

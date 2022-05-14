@@ -15,6 +15,8 @@ import {
     Thead,
     Tr,
 } from "@chakra-ui/react";
+import React from "react";
+import { useCallback } from "react";
 import Counter from "../animated/Counter";
 import { PlayerData, ProgressData } from "./Challenge";
 
@@ -37,7 +39,7 @@ const EndedText: React.FC<{
     //        c) Stickman has 5 limbs (left/right hand, left/right leg, half torso), each limb missing is -10 points
     // 2. If the word is skipped, no points awarded
     console.log({ playerData, wordPlayerData });
-    const calculateWordScore = (wordData: ProgressData): number => {
+    const calculateWordScore = useCallback((wordData: ProgressData): number => {
         if (wordData.skipped) return 0;
         const wordLength = wordData.word.length;
         const numberMissingCharacters = wordData.numberMissingCharacters;
@@ -66,7 +68,7 @@ const EndedText: React.FC<{
             timeBonus -
             triesPenalty;
         return points;
-    };
+    }, []);
 
     let totalScore = 0
     let totalTries = 0
@@ -153,7 +155,7 @@ const EndedText: React.FC<{
                     <Tbody>
                         {Object.keys(wordPlayerData).sort((a,b) => wordPlayerData[a].number - wordPlayerData[b].number).map((word, index) => (
                             <Tr key={index}>
-                                <Td>{wordPlayerData[word].number}</Td>
+                                <Td>{wordPlayerData[word].number+1}</Td>
                                 <Td>{wordPlayerData[word].word}</Td>
                                 <Td isNumeric>{wordPlayerData[word].numberTimesTried}</Td>
                                 <Td isNumeric>{Math.round(wordPlayerData[word].timeTaken/100)/10}</Td>
@@ -180,4 +182,4 @@ const EndedText: React.FC<{
     );
 };
 
-export default EndedText;
+export default React.memo(EndedText);

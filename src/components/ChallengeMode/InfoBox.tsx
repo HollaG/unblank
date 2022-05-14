@@ -1,4 +1,5 @@
 import { Box, Button, Stack, Text } from "@chakra-ui/react";
+import React from "react";
 import { CHALLENGE_WORDS_NUMBER } from "./Challenge";
 
 const InfoBox: React.FC<{
@@ -26,4 +27,4 @@ const InfoBox: React.FC<{
     );
 };
 
-export default InfoBox;
+export default React.memo(InfoBox);
