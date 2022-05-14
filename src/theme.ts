@@ -11,6 +11,13 @@ const theme = extendTheme({
         heading: "Roboto Mono, sans-serif",
         // body: 'Raleway, sans-serif',
     },
+    components: {
+        Button: {
+            baseStyle: {
+                zIndex: 1500
+            }
+        }
+    },
     config,
 });
 

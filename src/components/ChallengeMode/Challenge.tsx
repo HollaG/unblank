@@ -110,8 +110,6 @@ const Challenge: React.FC = () => {
         defaultValues.playerData
     );
 
-    
-
     /* Pick a new word */
     const chooseNewWord = useCallback(() => {
         // pick a random word from the list
@@ -218,20 +216,23 @@ const Challenge: React.FC = () => {
 
     /* Skip current word */
     const skipWord = useCallback(() => {
-        setPlayerData((prevState) => ({
-            ...prevState,
-            wordsSkipped: [...prevState.wordsSkipped, currentWord],
-        }));
-        setWordPlayerData((prevState) => ({
-            ...prevState,
-            [currentWord]: {
-                ...prevState[currentWord],
-                skipped: true,
-                timeTaken: Date.now() - prevState[currentWord].startTimestamp,
-            },
-        }));
-        progressGame();
-    }, [progressGame, currentWord]);
+        if (gameStatus === 2) {
+            setPlayerData((prevState) => ({
+                ...prevState,
+                wordsSkipped: [...prevState.wordsSkipped, currentWord],
+            }));
+            setWordPlayerData((prevState) => ({
+                ...prevState,
+                [currentWord]: {
+                    ...prevState[currentWord],
+                    skipped: true,
+                    timeTaken:
+                        Date.now() - prevState[currentWord].startTimestamp,
+                },
+            }));
+            progressGame();
+        }
+    }, [progressGame, currentWord, gameStatus]);
     /* Keeps track of the player's performance per word. */
     const [wordPlayerData, setWordPlayerData] = useState<{
         [key: string]: ProgressData;
@@ -321,7 +322,7 @@ const Challenge: React.FC = () => {
         currentWord,
         correctAnswer,
         progressGame,
-        acceptedWords
+        acceptedWords,
     ]);
 
     /*

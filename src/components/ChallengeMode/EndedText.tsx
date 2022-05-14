@@ -14,9 +14,12 @@ import {
     Th,
     Thead,
     Tr,
+    useColorModeValue,
+    useStyleConfig,
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
+import ReactCanvasConfetti from "react-canvas-confetti";
 import Counter from "../animated/Counter";
 import { PlayerData, ProgressData } from "./Challenge";
 
@@ -38,7 +41,7 @@ const EndedText: React.FC<{
     //        b) Stickman dead: 0 points
     //        c) Stickman has 5 limbs (left/right hand, left/right leg, half torso), each limb missing is -10 points
     // 2. If the word is skipped, no points awarded
-    console.log({ playerData, wordPlayerData });
+
     const calculateWordScore = useCallback((wordData: ProgressData): number => {
         if (wordData.skipped) return 0;
         const wordLength = wordData.word.length;
@@ -70,26 +73,94 @@ const EndedText: React.FC<{
         return points;
     }, []);
 
-    let totalScore = 0
-    let totalTries = 0
-    Object.keys(wordPlayerData).forEach(word => {
-        let score = calculateWordScore(wordPlayerData[word])
-        wordPlayerData[word].points = score
-        totalScore += score
-        totalTries += wordPlayerData[word].numberTimesTried
-    })
-    
+    let totalScore = 0;
+    let totalTries = 0;
+    Object.keys(wordPlayerData).forEach((word) => {
+        let score = calculateWordScore(wordPlayerData[word]);
+        wordPlayerData[word].points = score;
+        totalScore += score;
+        totalTries += wordPlayerData[word].numberTimesTried;
+    });
 
-   
+    // for skipped red color
+    const skippedColor = useColorModeValue("red.500", "red.200");
 
+    // save score if score is higher than current high score
+    const [previousHigh, setPreviousHigh] = useState(0);
+    const [scoreState, setScoreState] = useState(0);
+    // 0 - loading highscore
+    // 1 - new highscore
+    // 2 - new highscore (first time playing)
+    // 3 - no new highscore
+
+    const [fireConfetti, setFireConfetti] = useState(false);
+    useEffect(() => {
+        const previousHigh = localStorage.getItem("highscore");
+        let parsedPreviousHigh = 0;
+        let newScoreState = 0;
+        if (!previousHigh || Number.isNaN(Number(previousHigh))) {
+            // no previous high score / corrupt
+            newScoreState = 2;
+            localStorage.setItem("highscore", totalScore.toString());
+        } else {
+            parsedPreviousHigh = Number(previousHigh);
+            if (totalScore > Number(previousHigh)) {
+                localStorage.setItem("highscore", totalScore.toString());
+                newScoreState = 1;
+            } else {
+                newScoreState = 3;
+            }
+        }
+
+        // after the animation of the number counting up, set the previous high score
+        const timeout = setTimeout(() => {
+            setPreviousHigh(parsedPreviousHigh);
+            setScoreState(newScoreState);
+            if (newScoreState === 1 || 2) setFireConfetti(true);
+        }, 1500);
+
+        return () => clearTimeout(timeout);
+    }, [totalScore]);
 
     return (
         <Stack textAlign={"center"} spacing={3}>
             <Text>Congratulations! Your score is</Text>
             <Box>
-                <Heading fontSize="6xl">
+                <Heading fontSize="6xl" position="relative">
                     <Counter from={0} to={totalScore} />
+                    <ReactCanvasConfetti
+                        style={{
+                            position: "absolute",
+                            top: -125,
+                            left: 0,
+                            right: 0,
+                            height: "450",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            maxWidth: "600px",
+                            width: "100%",
+                        }}
+                        // zIndex={100}
+                        fire={fireConfetti}
+                        startVelocity={15}
+                        spread={60}
+                    />
                 </Heading>
+                <Box>
+                    {scoreState === 0 && <Text fontSize="sm">ㅤ</Text>}
+                    {scoreState === 3 && (
+                        <Text fontSize="sm">
+                            {" "}
+                            Previous highscore: {previousHigh}{" "}
+                        </Text>
+                    )}
+                    {scoreState === 2 && (
+                        <Text fontSize="sm">
+                            {" "}
+                            New highscore! Previous: {previousHigh}{" "}
+                        </Text>
+                    )}
+                </Box>
                 {/* <Box>
                     <Text fontSize={"sm"} fontWeight="light"  display="inline-block" mr={1}>
                         That's better than
@@ -139,9 +210,7 @@ const EndedText: React.FC<{
 
             <TableContainer>
                 <Table variant="simple" size="sm">
-                    <TableCaption>
-                        Detailed results
-                    </TableCaption>                    
+                    <TableCaption>Detailed results</TableCaption>
                     <Thead>
                         <Tr>
                             <Th>#</Th>
@@ -153,29 +222,54 @@ const EndedText: React.FC<{
                     </Thead>
 
                     <Tbody>
-                        {Object.keys(wordPlayerData).sort((a,b) => wordPlayerData[a].number - wordPlayerData[b].number).map((word, index) => (
-                            <Tr key={index}>
-                                <Td>{wordPlayerData[word].number+1}</Td>
-                                <Td>{wordPlayerData[word].word}</Td>
-                                <Td isNumeric>{wordPlayerData[word].numberTimesTried}</Td>
-                                <Td isNumeric>{Math.round(wordPlayerData[word].timeTaken/100)/10}</Td>
-                                <Td isNumeric>{wordPlayerData[word].points}</Td>
-                            </Tr>
-                        ))}
-                        
-                        
+                        {Object.keys(wordPlayerData)
+                            .sort(
+                                (a, b) =>
+                                    wordPlayerData[a].number -
+                                    wordPlayerData[b].number
+                            )
+                            .map((word, index) => {
+                                let isSkipped = wordPlayerData[word].skipped;
+                                return (
+                                    <Tr
+                                        key={index}
+                                        textColor={
+                                            isSkipped ? skippedColor : "inherit"
+                                        }
+                                    >
+                                        <Td>
+                                            {wordPlayerData[word].number + 1}
+                                        </Td>
+                                        <Td>{wordPlayerData[word].word}</Td>
+                                        <Td isNumeric>
+                                            {
+                                                wordPlayerData[word]
+                                                    .numberTimesTried
+                                            }
+                                        </Td>
+                                        <Td isNumeric>
+                                            {Math.round(
+                                                wordPlayerData[word].timeTaken /
+                                                    100
+                                            ) / 10}
+                                        </Td>
+                                        <Td isNumeric>
+                                            {wordPlayerData[word].points}
+                                        </Td>
+                                    </Tr>
+                                );
+                            })}
                     </Tbody>
 
-                    <Tfoot> 
-                        <Tr> 
-                            <Td>  </Td>
-                            <Td> TOTAL  </Td>
+                    <Tfoot>
+                        <Tr>
+                            <Td> </Td>
+                            <Td> TOTAL </Td>
                             <Td isNumeric> {totalTries}</Td>
                             <Td isNumeric> {playerData.timeTaken}</Td>
                             <Td isNumeric> {totalScore}</Td>
                         </Tr>
                     </Tfoot>
-                    
                 </Table>
             </TableContainer>
         </Stack>

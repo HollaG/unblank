@@ -20,25 +20,30 @@ const CharacterInput: React.FC<{
     setEnteredAnswer,
     answerIsWrong,
 }) => {
-    
     if (inputRef.current && !enteredAnswer.length) inputRef.current.focus();
 
     const onChange = useCallback((e: string) => {
-        setEnteredAnswer(e.toLowerCase().split(""));
-    }, []);
+       
+        setEnteredAnswer(e.toLowerCase().split(""))
+    }, [setEnteredAnswer]);
 
+    
     // Doesn't work on mobile!!!
-    const onSpacePressed = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === " ") {
-            // spacebar was pressed, skip
-            skipWord();
-        }
-    }, [skipWord]);
+    const onSpacePressed = useCallback(
+        (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === " ") {
+                // spacebar was pressed, skip
+                skipWord();
+                e.preventDefault()
+            }
+        },
+        [skipWord]
+    );
     // Note: the error border won't be shown if the pininput is focused. Hence, we have to change the focusBorderColor if there is an error.
 
-    let toAnimate = answerIsWrong
-    if (toAnimate) setTimeout(() => toAnimate = false, 350)
-    
+    let toAnimate = answerIsWrong;
+    if (toAnimate) setTimeout(() => (toAnimate = false), 350);
+
     return (
         <motion.div
             animate={{ x: toAnimate ? animationKeyframes : 0 }}

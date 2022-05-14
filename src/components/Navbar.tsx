@@ -19,7 +19,7 @@ import {
     IconButton,
     Heading,
 } from "@chakra-ui/react";
-import { MoonIcon, QuestionIcon, SunIcon } from "@chakra-ui/icons";
+import { MoonIcon, QuestionIcon, SettingsIcon, SunIcon } from "@chakra-ui/icons";
 import { MAX_WIDTH } from "../App";
 
 const NavLink = ({ children }: { children: ReactNode }) => (
@@ -63,6 +63,10 @@ export default function Nav() {
                                     <SunIcon />
                                 )}
                             </Button>
+                            <IconButton
+                                aria-label="Settings"
+                                icon={<SettingsIcon />}
+                            />
                             <IconButton
                                 aria-label="FAQ"
                                 icon={<QuestionIcon />}
