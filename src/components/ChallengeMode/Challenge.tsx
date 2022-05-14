@@ -13,18 +13,13 @@ import InfoBox from "./InfoBox";
 import CountdownBox from "./CountdownBox";
 import WordBox from "./WordBox";
 import EndedText from "./EndedText";
-import { createBigIntLiteral } from "typescript";
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserView, isMobile, MobileView } from "react-device-detect";
 
-const loadJson = (): Promise<any> => {
-    return new Promise((res, rej) => {
-        import(`../../words.json`).then((data) => {
-            res(data?.default);
-        });
-    });
-};
+
+
 
 export const CHALLENGE_WORDS_NUMBER = 25;
 
@@ -40,10 +35,16 @@ export interface ProgressData {
     timeTaken: number;
     numberTimesTried: number; // the number of times the player filled in all the characters.,
     word: string;
+    actualWord: string;
+    number: number;
     startTimestamp: number;
     numberMissingCharacters: number;
+    points?: number
 }
 const Challenge: React.FC = () => {
+
+
+    const [gameMode, setGameMode] = useState<0|1>(0);
 
     /* Fetch the dictionary asynchronously */
     const [gameData, setGameData] = useState<{
@@ -64,8 +65,6 @@ const Challenge: React.FC = () => {
 
     const gameIsReady = !!gameData && !!acceptedWords;
 
-
-    console.log({acceptedWords})
     /* Scroll to word box when game starting (only if mobile!) */
     const wordBoxRef = useRef<HTMLDivElement>(null);
   
@@ -149,10 +148,9 @@ const Challenge: React.FC = () => {
         // For NORMAL mode, words allowed are 3-7 characters in length, inclusive
         // for HARDCORE mode, all words are allowed.
 
-        let type = 0 // todo
-        // 0 = normal, 1 = hardcore
+  
 
-        const wordLength = type === 0 ? Math.floor(Math.random() * (7 - 3 + 1)) + 3 : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
+        const wordLength = gameMode === 0 ? Math.floor(Math.random() * (7 - 3 + 1)) + 3 : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
         const wordsOfThisLength = Object.keys(gameData?.byLength?.[wordLength] || {})
         const randomWord = wordsOfThisLength?.[Math.floor(Math.random() * wordsOfThisLength.length)];
 
@@ -219,10 +217,12 @@ const Challenge: React.FC = () => {
                 startTimestamp: Date.now(),
                 timeTaken: 0,
                 word: randomWord,
+                actualWord: randomWord,
+                number: Object.keys(prevState)?.length || 0,
                 numberMissingCharacters: numberOfCharactersToRemove,
             },
         }));
-    }, [gameData]);
+    }, [gameData, gameMode]);
 
     /* Skip current word */
     const skipWord = () => {      
@@ -258,11 +258,12 @@ const Challenge: React.FC = () => {
     const [wordPlayerData, setWordPlayerData] = useState<{
         [key: string]: ProgressData;
     }>(defaultValues.wordPlayerData);
-    console.log({ wordPlayerData });
+
 
     /* Checks to see if the player has entered the correct characters */
     useEffect(() => {
         if (gameStatus === 2) {
+
             if (enteredAnswer.length !== correctAnswer.length) return;
 
             setWordPlayerData((prevState) => {
@@ -277,6 +278,8 @@ const Challenge: React.FC = () => {
                             timeTaken: 0,
                             word: currentWord,
                             numberMissingCharacters: correctAnswer.length,
+                            actualWord: currentWord,
+                            number: Object.keys(prevState)?.length || 0,
                         },
                     };
                 } else {
@@ -291,7 +294,7 @@ const Challenge: React.FC = () => {
                 }
             });
 
-            console.log({ enteredAnswer });
+         
             const splitCorrectWord = blankedWord.split(" ");
             let blankNumber = 0;
             let checkWordArray: string[] = [];
@@ -332,6 +335,7 @@ const Challenge: React.FC = () => {
                 // doesn't exist
                 // set to red
                 setAnswerIsWrong(true);
+                setEnteredAnswer([])
             }
         }
     }, [
@@ -361,17 +365,19 @@ const Challenge: React.FC = () => {
     // Colors
     const mainBoxBackgroundColor = useColorModeValue("blue.100", "gray.700");
 
-    
+    // change border from curve to flat at 800px viewport mark
+    const [widthLargerThan800] = useMediaQuery("(min-width: 800px)");
 
     return (
         <Stack spacing={4} justifyContent="center" pt={6}>
-            <Heading textAlign="center"> Challenge mode </Heading>
+            <Heading textAlign="center"> {gameMode === 0 ? "Normal" : "Hardcore"} mode </Heading>
 
             <Box
                 backgroundColor={mainBoxBackgroundColor}
                 w="100%"
-                p={8}
-                borderRadius="md"
+                py={8}
+                px={2}
+                borderRadius={widthLargerThan800 ? "md" : "none"}
                 textAlign={"center"}
                 ref={wordBoxRef}
             >
@@ -382,6 +388,7 @@ const Challenge: React.FC = () => {
                         word={blankedWord}
                         progress={currentWordNumber}
                         setPlayerData={setPlayerData}
+                        enteredAnswer={enteredAnswer}
                     />
                 )}
                 {gameStatus === 3 && (

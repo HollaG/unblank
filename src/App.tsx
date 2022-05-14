@@ -8,6 +8,8 @@ import {
     
  
 } from "@chakra-ui/react";
+
+import '@fontsource/roboto-mono/700.css'
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
 import { Logo } from "./Logo";
 import Nav from "./components/Navbar";
@@ -15,6 +17,7 @@ import Challenge from "./components/ChallengeMode/Challenge";
 import theme from './theme'
 import DebugMode from "./components/DebugMode";
 export const MAX_WIDTH = 800
+
 
 export const App = () => (
     <ChakraProvider theme={theme} >

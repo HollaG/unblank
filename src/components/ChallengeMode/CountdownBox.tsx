@@ -29,7 +29,7 @@ const CountdownBox: React.FC<{ startGame: () => void }> = ({ startGame }) => {
             const elapsed = timestamp - startTimestamp;
             if (previousTimeStamp !== timestamp) {
                 // Math.min() is used here to make sure the element stops at exactly 200px
-                
+
                 let progress = 100 - Math.floor((elapsed / 3000) * 100);
                 setTimer(progress);
                 if (progress <= 0) done = true;
@@ -50,7 +50,7 @@ const CountdownBox: React.FC<{ startGame: () => void }> = ({ startGame }) => {
     }, [startGame]);
 
     return (
-        <Stack>
+        <Stack px={4}>
             <AnimatedProgress value={timer} transitionDuration={50} />
 
             <Text> Get ready! The game will begin in </Text>

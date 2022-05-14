@@ -4,7 +4,16 @@ import {
     Heading,
     SimpleGrid,
     Stack,
+    Table,
+    TableCaption,
+    TableContainer,
+    Tbody,
+    Td,
     Text,
+    Tfoot,
+    Th,
+    Thead,
+    Tr,
 } from "@chakra-ui/react";
 import Counter from "../animated/Counter";
 import { PlayerData, ProgressData } from "./Challenge";
@@ -27,7 +36,7 @@ const EndedText: React.FC<{
     //        b) Stickman dead: 0 points
     //        c) Stickman has 5 limbs (left/right hand, left/right leg, half torso), each limb missing is -10 points
     // 2. If the word is skipped, no points awarded
-
+    console.log({ playerData, wordPlayerData });
     const calculateWordScore = (wordData: ProgressData): number => {
         if (wordData.skipped) return 0;
         const wordLength = wordData.word.length;
@@ -59,10 +68,18 @@ const EndedText: React.FC<{
         return points;
     };
 
-    const totalScore = Object.keys(wordPlayerData).reduce(
-        (acc, word) => acc + calculateWordScore(wordPlayerData[word]),
-        0
-    );
+    let totalScore = 0
+    let totalTries = 0
+    Object.keys(wordPlayerData).forEach(word => {
+        let score = calculateWordScore(wordPlayerData[word])
+        wordPlayerData[word].points = score
+        totalScore += score
+        totalTries += wordPlayerData[word].numberTimesTried
+    })
+    
+
+   
+
 
     return (
         <Stack textAlign={"center"} spacing={3}>
@@ -117,6 +134,48 @@ const EndedText: React.FC<{
                 <Heading fontSize="lg"> Skipped words </Heading>
                 <Text>{playerData.wordsSkipped.join(", ")}</Text>
             </Box>
+
+            <TableContainer>
+                <Table variant="simple" size="sm">
+                    <TableCaption>
+                        Detailed results
+                    </TableCaption>                    
+                    <Thead>
+                        <Tr>
+                            <Th>#</Th>
+                            <Th>Word</Th>
+                            <Th isNumeric>Tries</Th>
+                            <Th isNumeric>Time (s)</Th>
+                            <Th isNumeric>Points</Th>
+                        </Tr>
+                    </Thead>
+
+                    <Tbody>
+                        {Object.keys(wordPlayerData).sort((a,b) => wordPlayerData[a].number - wordPlayerData[b].number).map((word, index) => (
+                            <Tr key={index}>
+                                <Td>{wordPlayerData[word].number}</Td>
+                                <Td>{wordPlayerData[word].word}</Td>
+                                <Td isNumeric>{wordPlayerData[word].numberTimesTried}</Td>
+                                <Td isNumeric>{Math.round(wordPlayerData[word].timeTaken/100)/10}</Td>
+                                <Td isNumeric>{wordPlayerData[word].points}</Td>
+                            </Tr>
+                        ))}
+                        
+                        
+                    </Tbody>
+
+                    <Tfoot> 
+                        <Tr> 
+                            <Td>  </Td>
+                            <Td> TOTAL  </Td>
+                            <Td isNumeric> {totalTries}</Td>
+                            <Td isNumeric> {playerData.timeTaken}</Td>
+                            <Td isNumeric> {totalScore}</Td>
+                        </Tr>
+                    </Tfoot>
+                    
+                </Table>
+            </TableContainer>
         </Stack>
     );
 };

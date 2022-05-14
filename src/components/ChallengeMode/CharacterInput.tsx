@@ -1,6 +1,9 @@
 import { HStack, PinInput, PinInputField } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import React, { SyntheticEvent } from "react";
 import { useEffect, useState } from "react";
+
+const animationKeyframes = [1, -1, -3, 3, 1, -1, -3, 3, 1];
 
 const CharacterInput: React.FC<{
     correctAnswer: string[];
@@ -17,7 +20,7 @@ const CharacterInput: React.FC<{
     setEnteredAnswer,
     answerIsWrong,
 }) => {
-    console.log("DEBUG: CHARACTERINPUT.tsx is RERENDERING!");
+    
     if (inputRef.current && !enteredAnswer.length) inputRef.current.focus();
 
     const onChange = (e: string) => {
@@ -25,31 +28,40 @@ const CharacterInput: React.FC<{
     };
 
     // Doesn't work on mobile!!!
-    const onSpacePressed = (e: React.KeyboardEvent<HTMLInputElement>) => {        
+    const onSpacePressed = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === " ") {
             // spacebar was pressed, skip
             skipWord();
         }
     };
     // Note: the error border won't be shown if the pininput is focused. Hence, we have to change the focusBorderColor if there is an error.
+
+    let toAnimate = answerIsWrong
+    if (toAnimate) setTimeout(() => toAnimate = false, 350)
+    
     return (
-        <HStack alignItems="center" justifyContent="center">
-            <PinInput
-                type="alphanumeric"
-                value={enteredAnswer.join("")}
-                onChange={onChange}
-                isInvalid={answerIsWrong}
-                focusBorderColor={answerIsWrong ? "red.500" : "blue.500"}
-            >
-                {correctAnswer.map((char, index) => (
-                    <PinInputField
-                        onKeyDown={onSpacePressed}                       
-                        ref={index === 0 ? inputRef : undefined}
-                        key={index}
-                    />
-                ))}
-            </PinInput>
-        </HStack>
+        <motion.div
+            animate={{ x: toAnimate ? animationKeyframes : 0 }}
+            transition={{ duration: 0.3 }}
+        >
+            <HStack alignItems="center" justifyContent="center">
+                <PinInput
+                    type="alphanumeric"
+                    value={enteredAnswer.join("")}
+                    onChange={onChange}
+                    isInvalid={answerIsWrong}
+                    focusBorderColor={answerIsWrong ? "red.500" : "blue.500"}
+                >
+                    {correctAnswer.map((char, index) => (
+                        <PinInputField
+                            onKeyDown={onSpacePressed}
+                            ref={index === 0 ? inputRef : undefined}
+                            key={index}
+                        />
+                    ))}
+                </PinInput>
+            </HStack>{" "}
+        </motion.div>
     );
 };
 

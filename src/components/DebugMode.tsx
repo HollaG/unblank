@@ -2,7 +2,7 @@ import { Button, Flex, Heading, HStack, PinInput, PinInputField, Stack } from "@
 import { useRef, useState } from "react";
 
 const DebugMode = () => {
-    console.log("DEBUG: Rerendering!")
+
     const [input, setInput] = useState<string[]>(["1", "2", "3"]);
     const ref = useRef<HTMLInputElement>(null);
     const onChange = (e: string) => {

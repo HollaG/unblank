@@ -9,6 +9,7 @@
     "@emotion/styled": "^11.8.1",
     "@fontsource/open-sans": "^4.5.8",
     "@fontsource/raleway": "^4.5.8",
+    "@fontsource/roboto-mono": "^4.5.7",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^10.4.9",
     "@testing-library/user-event": "^12.8.3",

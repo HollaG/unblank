@@ -17,6 +17,7 @@ import {
     Center,
     Text,
     IconButton,
+    Heading,
 } from "@chakra-ui/react";
 import { MoonIcon, QuestionIcon, SunIcon } from "@chakra-ui/icons";
 import { MAX_WIDTH } from "../App";
@@ -49,7 +50,7 @@ export default function Nav() {
                     maxW={MAX_WIDTH}
                     margin="auto"
                 >
-                    <Text fontWeight="bold">Unblank</Text>
+                    <Heading fontSize="2xl" fontWeight="bold">Unblank</Heading>
 
                     <Flex alignItems={"center"}>
                         <Stack direction={"row"} spacing={2}>
