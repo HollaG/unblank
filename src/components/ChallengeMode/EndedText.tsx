@@ -17,15 +17,31 @@ import {
     useColorModeValue,
     useStyleConfig,
 } from "@chakra-ui/react";
+import html2canvas from "html2canvas";
 import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import Counter from "../animated/Counter";
 import EndedStickmenList from "../Stickmen/EndedStickmenList";
 import { PlayerData, ProgressData } from "./Challenge";
-
+import domtoimage from "dom-to-image";
 export const TRIES_BEFORE_PENALTY = 2;
+const convertToImage = async (el: HTMLElement, imageFileName: string, bgcolor: string) => {
+    // const canvas = await html2canvas(el);
+    // const dataUrl = canvas.toDataURL("image/png", 1.0);
+    // const blob = await (await fetch(dataUrl)).blob();
 
+    // return new File([blob], "results.png", { type: blob.type });
+
+    const blob = await domtoimage.toBlob(el, {
+        bgcolor,
+    });
+
+    
+
+
+    return new File([blob], imageFileName, { type: blob.type });
+};
 const EndedText: React.FC<{
     playerData: PlayerData;
     wordPlayerData: { [key: string]: ProgressData };
@@ -97,6 +113,7 @@ const EndedText: React.FC<{
     // 3 - no new highscore
 
     const [fireConfetti, setFireConfetti] = useState(false);
+    const [showConfettiCanvas, setShowConfettiCanvas] = useState(false);
     useEffect(() => {
         const previousHigh = localStorage.getItem("highscore");
         let parsedPreviousHigh = 0;
@@ -119,52 +136,82 @@ const EndedText: React.FC<{
         const timeout = setTimeout(() => {
             setPreviousHigh(parsedPreviousHigh);
             setScoreState(newScoreState);
-            if (newScoreState === 1 || 2) setFireConfetti(true);
+            if (newScoreState === 1 || newScoreState === 2) {
+                setShowConfettiCanvas(true);
+                setFireConfetti(true);
+            }
         }, 1500);
 
         return () => clearTimeout(timeout);
     }, [totalScore]);
 
+    const bgcolor = useColorModeValue("white", "black");
+    const share = useCallback( async () => {
+        try {
+            const image = await convertToImage(
+                document.getElementById("capture") as HTMLElement,
+                "share.png",
+                bgcolor
+            );
+            const shareData: ShareData = {
+                title: "Unblank",
+                text: `I scored ${totalScore} points in Unblank!`,
+                url: "https://beta.unblank.marcussoh.com",
+                files: [image],
+            };
+            await navigator.share(shareData);
+        } catch (e) {
+            console.log(e);
+        }
+    }, [bgcolor, convertToImage, totalScore]);
+
     return (
         <Stack textAlign={"center"} spacing={3}>
-            <Text>Congratulations! Your score is</Text>
-            <Box>
-                <Heading fontSize="6xl" position="relative">
-                    <Counter from={0} to={totalScore} />
-                    <ReactCanvasConfetti
-                        style={{
-                            position: "absolute",
-                            top: -125,
-                            left: 0,
-                            right: 0,
-                            height: "450",
-                            marginLeft: "auto",
-                            marginRight: "auto",
-                            maxWidth: "600px",
-                            width: "100%",
-                        }}
-                        // zIndex={100}
-                        fire={fireConfetti}
-                        startVelocity={15}
-                        spread={60}
-                    />
-                </Heading>
-                <Box>
-                    {scoreState === 0 && <Text fontSize="sm">ㅤ</Text>}
-                    {scoreState === 3 && (
-                        <Text fontSize="sm">
-                            {" "}
-                            Previous highscore: {previousHigh}{" "}
-                        </Text>
-                    )}
-                    {scoreState === 1 && (
-                        <Text fontSize="sm">
-                            {" "}
-                            New highscore! Previous: {previousHigh}{" "}
-                        </Text>
-                    )}
-                </Box>
-                {/* <Box>
+            <Box id="capture" py={3}>
+                <Stack>
+                    <Box>
+                        <Text>Congratulations! Your score is</Text>
+                        <Box position="relative">
+                            <Heading fontSize="6xl" mt={0}>
+                                <Counter from={0} to={totalScore} />
+                            </Heading>
+                            {showConfettiCanvas && (
+                                <ReactCanvasConfetti
+                                    style={{
+                                        position: "absolute",
+                                        top: -125,
+                                        left: 0,
+                                        right: 0,
+                                        height: "450",
+                                        marginLeft: "auto",
+                                        marginRight: "auto",
+                                        maxWidth: "600px",
+                                        width: "100%",
+                                    }}
+                                    // zIndex={100}
+                                    fire={fireConfetti}
+                                    startVelocity={15}
+                                    spread={60}
+                                    onDecay={() => setShowConfettiCanvas(false)}
+                                />
+                            )}
+                        </Box>
+                        <Box mt={2}>
+                            {scoreState === 0 && <Text fontSize="sm">ㅤ</Text>}
+                            {scoreState === 3 && (
+                                <Text fontSize="sm">
+                                    {" "}
+                                    Previous highscore: {previousHigh}{" "}
+                                </Text>
+                            )}
+                            {scoreState === 1 && (
+                                <Text fontSize="sm">
+                                    {" "}
+                                    New highscore! Previous: {previousHigh}{" "}
+                                </Text>
+                            )}
+                        </Box>
+                        {/* <Box>
                     <Text fontSize={"sm"} fontWeight="light"  display="inline-block" mr={1}>
                         That's better than
                     </Text>
@@ -173,16 +220,18 @@ const EndedText: React.FC<{
                         % of players!
                     </Text>
                 </Box> */}
-            </Box>
-            <EndedStickmenList wordPlayerData={wordPlayerData} />
-            <SimpleGrid columns={2} spacing={6} fontSize="xl">
-                <Box textAlign="right">
-                    <Text>You took</Text>
-                </Box>
-                <Box textAlign="left">
-                    <Text fontWeight="semibold">{playerData.timeTaken}s</Text>
-                </Box>
-                {/* <Box textAlign="right">
+                    </Box>
+                    <EndedStickmenList wordPlayerData={wordPlayerData} />
+                    <SimpleGrid columns={2} spacing={6} fontSize="xl">
+                        <Box textAlign="right">
+                            <Text>You took</Text>
+                        </Box>
+                        <Box textAlign="left">
+                            <Text fontWeight="semibold">
+                                {playerData.timeTaken}s
+                            </Text>
+                        </Box>
+                        {/* <Box textAlign="right">
                     <Text>Correct words</Text>
                 </Box>
                 <Box textAlign="left">
@@ -198,10 +247,14 @@ const EndedText: React.FC<{
                         {playerData.wordsSkipped.length}
                     </Text>
                 </Box> */}
-            </SimpleGrid>
-
+                    </SimpleGrid>
+                </Stack>
+            </Box>
             <Box textAlign="center">
-                <Button colorScheme="blue"> Share your score! </Button>
+                <Button colorScheme="blue" onClick={() => share()}>
+                    {" "}
+                    Share your score!{" "}
+                </Button>
             </Box>
 
             {/* <Box>
@@ -252,7 +305,8 @@ const EndedText: React.FC<{
                                                 wordPlayerData[word]
                                                     .numberMissingCharacters
                                             }{" "}
-                                            ({Math.round(
+                                            (
+                                            {Math.round(
                                                 (wordPlayerData[word]
                                                     .numberMissingCharacters /
                                                     word.length) *

@@ -16,8 +16,8 @@ import { ReactComponent as Stick5 } from "../../assets/stickman/stick-5.svg";
 
 import { calculateStickmanStage } from "../../utils/functions";
 const svgStyle = {
-    height: "50px",
-    width: "50px",
+    // height: "50px",
+    // width: "50px",
     transform: "scale(1.5)",
 };
 const stages = [StickFull, Stick1, Stick2, Stick3, Stick4, Stick5];

@@ -201,6 +201,7 @@ const Challenge: React.FC = () => {
             },
         }));
 
+        setPreviousWords((prevState) => [...prevState, randomWord]);
         console.log(
             `The word is %c${randomWord}`,
             "background: white; color: black;"
