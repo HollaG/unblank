@@ -154,7 +154,7 @@ const EndedText: React.FC<{
                             Previous highscore: {previousHigh}{" "}
                         </Text>
                     )}
-                    {scoreState === 2 && (
+                    {scoreState === 1 && (
                         <Text fontSize="sm">
                             {" "}
                             New highscore! Previous: {previousHigh}{" "}
@@ -213,11 +213,12 @@ const EndedText: React.FC<{
                     <TableCaption>Detailed results</TableCaption>
                     <Thead>
                         <Tr>
-                            <Th>#</Th>
+                            <Th width={'40px'}>#</Th>
                             <Th>Word</Th>
+                            <Th isNumeric>Blanks</Th>
                             <Th isNumeric>Tries</Th>
-                            <Th isNumeric>Time (s)</Th>
-                            <Th isNumeric>Points</Th>
+                            <Th isNumeric>Time</Th>
+                            <Th isNumeric>Pts</Th>
                         </Tr>
                     </Thead>
 
@@ -244,6 +245,12 @@ const EndedText: React.FC<{
                                         <Td isNumeric>
                                             {
                                                 wordPlayerData[word]
+                                                    .numberMissingCharacters
+                                            }
+                                        </Td>
+                                        <Td isNumeric>
+                                            {
+                                                wordPlayerData[word]
                                                     .numberTimesTried
                                             }
                                         </Td>
@@ -263,6 +270,7 @@ const EndedText: React.FC<{
 
                     <Tfoot>
                         <Tr>
+                            <Td> </Td>
                             <Td> </Td>
                             <Td> TOTAL </Td>
                             <Td isNumeric> {totalTries}</Td>

@@ -1,0 +1,16 @@
+<svg id="Man" xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: #000;
+        stroke-width: 2px;
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <circle cx="75.094" cy="45.5" r="12.219"/>
+  <rect x="74" y="57" width="2" height="36"/>
+  <path class="cls-1" d="M61.589,83.469L73.834,66.916l0.747,0.615L62.336,84.085Zm0,0L73.834,66.916l0.747,0.615L62.336,84.085Z"/>
+  <path class="cls-1" d="M88.192,83.469L75.948,66.916l-0.747.615L87.445,84.085Zm0,0L75.948,66.916l-0.747.615L87.445,84.085Z"/>
+  <path class="cls-1" d="M57.661,108.425L73.62,92.161l1.388,1.414L59.049,109.839Z"/>
+</svg>

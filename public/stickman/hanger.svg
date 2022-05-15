@@ -1,0 +1,13 @@
+<svg id="Hanger" xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+  <defs>
+    <style>
+      .cls-1 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M-82.71,135H233.71v37.341H-82.71V135Z"/>
+  <rect x="10" y="10" width="6" height="133"/>
+  <rect x="16" y="10" width="117" height="6"/>
+  <rect x="74" y="16" width="2" height="18"/>
+</svg>

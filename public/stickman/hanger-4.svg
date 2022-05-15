@@ -1,0 +1,15 @@
+<svg id="Man" xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+  <defs>
+    <style>
+      .cls-1 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <circle cx="75.094" cy="45.5" r="12.219"/>
+  <rect x="74" y="57" width="2" height="36"/>
+  <path class="cls-1" d="M-82.71,135H233.71v37.341H-82.71V135Z"/>
+  <rect x="10" y="10" width="6" height="133"/>
+  <rect x="16" y="10" width="117" height="6"/>
+  <path class="cls-1" d="M73.828,11.621h1.861V45.253H73.828V11.621Z"/>
+</svg>
