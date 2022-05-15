@@ -1,0 +1,11 @@
+<svg id="Dead_man" data-name="Dead man" xmlns="http://www.w3.org/2000/svg" width="150" height="150" viewBox="0 0 150 150">
+  <defs>
+    <style>
+      .cls-1 {
+        fill-rule: evenodd;
+      }
+    </style>
+  </defs>
+  <circle fill="currentColor" stroke="currentColor" cx="49.391" cy="66" r="12.484"/>
+  <path class="cls-1" fill="currentColor" stroke="currentColor" d="M60.361,69.6L60.8,67.65l35.12,7.91-0.44,1.951Z"/>
+</svg>

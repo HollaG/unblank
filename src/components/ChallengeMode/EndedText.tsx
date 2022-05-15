@@ -21,7 +21,10 @@ import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import Counter from "../animated/Counter";
+import EndedStickmenList from "../Stickmen/EndedStickmenList";
 import { PlayerData, ProgressData } from "./Challenge";
+
+export const TRIES_BEFORE_PENALTY = 2;
 
 const EndedText: React.FC<{
     playerData: PlayerData;
@@ -35,7 +38,7 @@ const EndedText: React.FC<{
     //     c. Time bonus: 10 points for every second under 5 seconds
     //        Alternatively, 1 point every 1/10 second under 5 seconds
     //        Maximum time bonus: 50 points
-    //     d. Number of tries: Subtract 10 points for each try over 3 tries, capped at 50 points subtracted
+    //     d. Number of tries: Subtract 10 points for each try over TRIES_BEFORE_PENALTY (3) tries, capped at 50 points subtracted
     //     d2.Alternatively, sync up with stickman
     //        a) Stickman alive: 50 points
     //        b) Stickman dead: 0 points
@@ -58,7 +61,7 @@ const EndedText: React.FC<{
             timeBonus = timeDifference;
         }
 
-        const triesOverLimit = tries - 3;
+        const triesOverLimit = tries - TRIES_BEFORE_PENALTY;
         let triesPenalty = 0;
         if (tries > 0) {
             // tried too many times
@@ -171,6 +174,7 @@ const EndedText: React.FC<{
                     </Text>
                 </Box> */}
             </Box>
+            <EndedStickmenList wordPlayerData={wordPlayerData} />
             <SimpleGrid columns={2} spacing={6} fontSize="xl">
                 <Box textAlign="right">
                     <Text>You took</Text>
@@ -178,7 +182,7 @@ const EndedText: React.FC<{
                 <Box textAlign="left">
                     <Text fontWeight="semibold">{playerData.timeTaken}s</Text>
                 </Box>
-                <Box textAlign="right">
+                {/* <Box textAlign="right">
                     <Text>Correct words</Text>
                 </Box>
                 <Box textAlign="left">
@@ -193,27 +197,28 @@ const EndedText: React.FC<{
                     <Text fontWeight="semibold">
                         {playerData.wordsSkipped.length}
                     </Text>
-                </Box>
+                </Box> */}
             </SimpleGrid>
+
             <Box textAlign="center">
                 <Button colorScheme="blue"> Share your score! </Button>
             </Box>
 
-            <Box>
+            {/* <Box>
                 <Heading fontSize="lg"> Correct words </Heading>
                 <Text>{playerData.wordsCorrect.join(", ")}</Text>
             </Box>
             <Box>
                 <Heading fontSize="lg"> Skipped words </Heading>
                 <Text>{playerData.wordsSkipped.join(", ")}</Text>
-            </Box>
+            </Box> */}
 
             <TableContainer>
                 <Table variant="simple" size="sm">
                     <TableCaption>Detailed results</TableCaption>
                     <Thead>
                         <Tr>
-                            <Th width={'40px'}>#</Th>
+                            <Th width={"40px"}>#</Th>
                             <Th>Word</Th>
                             <Th isNumeric>Blanks</Th>
                             <Th isNumeric>Tries</Th>
@@ -246,7 +251,14 @@ const EndedText: React.FC<{
                                             {
                                                 wordPlayerData[word]
                                                     .numberMissingCharacters
-                                            }
+                                            }{" "}
+                                            ({Math.round(
+                                                (wordPlayerData[word]
+                                                    .numberMissingCharacters /
+                                                    word.length) *
+                                                    100
+                                            )}
+                                            %)
                                         </Td>
                                         <Td isNumeric>
                                             {

@@ -17,8 +17,9 @@ import EndedText from "./EndedText";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserView, isMobile, MobileView } from "react-device-detect";
+import Queue from "../Stickmen/Queue";
 
-export const CHALLENGE_WORDS_NUMBER = 25;
+export const CHALLENGE_WORDS_NUMBER = 24;
 
 export interface PlayerData {
     timeTaken: number;
@@ -48,6 +49,7 @@ const Challenge: React.FC = () => {
     }>();
 
     const [acceptedWords, setAcceptedWords] = useState<{ [key: string]: 1 }>();
+    const [previousWords, setPreviousWords] = useState<string[]>([]);
     useEffect(() => {
         // let loadJsonAsync = async () => {
         //     const data = await loadJson();
@@ -117,17 +119,21 @@ const Challenge: React.FC = () => {
         // For NORMAL mode, words allowed are 3-7 characters in length, inclusive
         // for HARDCORE mode, all words are allowed.
 
-        const wordLength =
-            gameMode === 0
-                ? Math.floor(Math.random() * (7 - 3 + 1)) + 3
-                : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
-        const wordsOfThisLength = Object.keys(
-            gameData?.byLength?.[wordLength] || {}
-        );
-        const randomWord =
-            wordsOfThisLength?.[
-                Math.floor(Math.random() * wordsOfThisLength.length)
-            ];
+        let randomWord = "";
+        do {
+            const wordLength =
+                gameMode === 0
+                    ? Math.floor(Math.random() * (7 - 3 + 1)) + 3
+                    : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
+            const wordsOfThisLength = Object.keys(
+                gameData?.byLength?.[wordLength] || {}
+            );
+            const word =
+                wordsOfThisLength?.[
+                    Math.floor(Math.random() * wordsOfThisLength.length)
+                ];
+            randomWord = word;
+        } while (randomWord != undefined && previousWords.includes(randomWord));
 
         // const randomWord =
         //     gameData?.words[
@@ -389,12 +395,20 @@ const Challenge: React.FC = () => {
                 )}
                 {gameStatus === 1 && <CountdownBox startGame={startGame} />}
                 {gameStatus === 2 && (
-                    <WordBox
-                        word={blankedWord}
-                        progress={currentWordNumber}
-                        setPlayerData={setPlayerData}
-                        enteredAnswer={enteredAnswer}
-                    />
+                    <>
+                        <WordBox
+                            word={blankedWord}
+                            progress={currentWordNumber}
+                            setPlayerData={setPlayerData}
+                            enteredAnswer={enteredAnswer}
+                        />
+                        <Queue
+                            numLeft={CHALLENGE_WORDS_NUMBER - currentWordNumber}
+                            timesTried={
+                                wordPlayerData[currentWord]?.numberTimesTried
+                            }
+                        />
+                    </>
                 )}
                 {gameStatus === 3 && (
                     <Stack>
