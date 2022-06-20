@@ -4,9 +4,8 @@ This project was bootstrapped with
 All usual scripts apply.
 
 ## Acknowledgements
-
-[Word source](https://www.wordfrequency.info/)
-[Accepted words list](https://www.wordgamedictionary.com/word-lists/)
+- [Word source](https://www.wordfrequency.info/)
+- [Accepted words list](https://www.wordgamedictionary.com/word-lists/)
 
 ## Core Libraries used
 - [React](https://github.com/facebook/react)
