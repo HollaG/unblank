@@ -153,7 +153,7 @@ const EndedText: React.FC<{
             const shareData: ShareData = {
                 title: "Unblank",
                 text: `I scored ${totalScore} points in Unblank!`,
-                url: "https://beta.unblank.marcussoh.com",
+                url: "https://unblank.me",
                 files: [image],
             };
             await navigator.share(shareData);
