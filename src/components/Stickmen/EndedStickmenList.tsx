@@ -55,7 +55,7 @@ const EndedStickmenList: React.FC<{
                                         {...svgStyle}
                                         color={'skippedColor'}
                                     />
-                                    <Text fontSize={"xs"}> {word} </Text>
+                                    <Text fontSize={"xs"}> {wordPlayerData[word].word} </Text>
                                 </Box>
                             );
                         } else {
@@ -65,7 +65,7 @@ const EndedStickmenList: React.FC<{
                                         {...svgStyle}
                                         color={invert}
                                     />
-                                    <Text fontSize={"xs"}> {word} </Text>
+                                    <Text fontSize={"xs"}> {wordPlayerData[word].word} </Text>
                                 </Box>
                             );
                         }

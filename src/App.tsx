@@ -16,6 +16,7 @@ import Nav from "./components/Navbar";
 import Challenge from "./components/ChallengeMode/Challenge";
 import theme from './theme'
 import DebugMode from "./components/DebugMode";
+
 export const MAX_WIDTH = 800
 
 
@@ -30,5 +31,6 @@ export const App = () => (
         <Box position="fixed" left={0} bottom={0} width="100%" id="skip-btn-container"> 
            
         </Box>
+     
     </ChakraProvider>
 );

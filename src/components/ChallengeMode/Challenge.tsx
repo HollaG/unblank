@@ -6,6 +6,10 @@ import {
     Text,
     Stack,
     useMediaQuery,
+    Center,
+    Flex,
+    Spacer,
+    Link,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CharacterInput from "./CharacterInput";
@@ -40,6 +44,8 @@ export interface ProgressData {
     points?: number;
 }
 const Challenge: React.FC = () => {
+    // 0 - normal
+    // 1 - hardcore
     const [gameMode, setGameMode] = useState<0 | 1>(0);
 
     /* Fetch the dictionary asynchronously */
@@ -117,14 +123,17 @@ const Challenge: React.FC = () => {
         // pick a random word from the list
 
         // For NORMAL mode, words allowed are 3-7 characters in length, inclusive
-        // for HARDCORE mode, all words are allowed.
+        // for HARDCORE mode, words from 7-14 characters are allowed.
 
         let randomWord = "";
         do {
+            console.log({ previousWords });
             const wordLength =
                 gameMode === 0
-                    ? Math.floor(Math.random() * (7 - 3 + 1)) + 3
-                    : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
+                    ? Math.floor(Math.random() * (7 - 3)) + 3
+                    : Math.floor(Math.random() * (14 - 7)) + 7;
+            // : Math.floor(Math.random() * (14 - 3 + 1)) + 3;
+
             const wordsOfThisLength = Object.keys(
                 gameData?.byLength?.[wordLength] || {}
             );
@@ -133,7 +142,7 @@ const Challenge: React.FC = () => {
                     Math.floor(Math.random() * wordsOfThisLength.length)
                 ];
             randomWord = word;
-        } while (randomWord != undefined && previousWords.includes(randomWord));
+        } while (previousWords.includes(randomWord));
 
         // const randomWord =
         //     gameData?.words[
@@ -206,7 +215,7 @@ const Challenge: React.FC = () => {
             `The word is %c${randomWord}`,
             "background: white; color: black;"
         );
-    }, [gameData, gameMode]);
+    }, [gameData, gameMode, previousWords]);
 
     /* Advance to the next word */
     const progressGame = useCallback(() => {
@@ -343,6 +352,7 @@ const Challenge: React.FC = () => {
         if (!gameIsReady) return;
         setGameStatus(1);
         setCorrectAnswer([""]);
+
         isMobile && wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [gameIsReady, wordBoxRef]);
 
@@ -364,6 +374,7 @@ const Challenge: React.FC = () => {
         setWordPlayerData(defaultValues.wordPlayerData);
         setGameStatus(1);
         setCorrectAnswer([""]);
+        setPreviousWords([]);
     }, [defaultValues]);
 
     // Colors
@@ -374,11 +385,37 @@ const Challenge: React.FC = () => {
 
     return (
         <Stack spacing={4} justifyContent="center" pt={6}>
-            <Heading textAlign="center">
-                {" "}
-                {gameMode === 0 ? "Normal" : "Hardcore"} mode{" "}
-            </Heading>
+            <Box>
+                <Heading textAlign="center">
+                    {" "}
+                    {gameMode === 0 ? "Normal" : "Hardcore"} mode{" "}
+                </Heading>
 
+                {
+                    <Text mt={0} textAlign="center" fontWeight="light">
+                        {" "}
+                        {gameMode === 0
+                            ? "3-7 character words"
+                            : "7-14 character words"}
+                        {" provided by "}<Link href='https://wordfrequency.info' isExternal>wordfrequency.info</Link>
+                    </Text>
+                }
+            </Box>
+            <Center>
+                <Button
+                    onClick={() => {
+                        if (gameMode === 0) {
+                            setGameMode(1);
+                        } else {
+                            setGameMode(0);
+                        }
+                    }}
+                    disabled={inProgress}
+                >
+                    {" "}
+                    Change mode{" "}
+                </Button>
+            </Center>
             <Box
                 backgroundColor={mainBoxBackgroundColor}
                 w="100%"
@@ -442,14 +479,23 @@ const Challenge: React.FC = () => {
                     <Box>
                         <MobileView>
                             <SkipButtonPortal>
-                                <Button
-                                    onClick={() => skipWord()}
-                                    disabled={gameStatus !== 2}
-                                    width="100%"
-                                >
-                                    Skip word
-                                    {/* Note: space bar onkeydown detection doesn't work on mobile. */}
-                                </Button>
+                                <Flex>
+                                    <Button
+                                        onClick={() => skipWord()}
+                                        disabled={gameStatus !== 2}
+                                    >
+                                        Skip
+                                        {/* Note: space bar onkeydown detection doesn't work on mobile. */}
+                                    </Button>
+                                    <Spacer/>
+                                    <Button
+                                        onClick={() => skipWord()}
+                                        disabled={gameStatus !== 2}
+                                    >
+                                        Skip
+                                        {/* Note: space bar onkeydown detection doesn't work on mobile. */}
+                                    </Button>
+                                </Flex>
                             </SkipButtonPortal>
                         </MobileView>
                         <BrowserView>

@@ -15,9 +15,9 @@ import {
     Thead,
     Tr,
     useColorModeValue,
-    useStyleConfig,
+
 } from "@chakra-ui/react";
-import html2canvas from "html2canvas";
+
 import React, { useEffect, useState } from "react";
 import { useCallback } from "react";
 import ReactCanvasConfetti from "react-canvas-confetti";
@@ -55,10 +55,7 @@ const EndedText: React.FC<{
     //        Alternatively, 1 point every 1/10 second under 5 seconds
     //        Maximum time bonus: 50 points
     //     d. Number of tries: Subtract 10 points for each try over TRIES_BEFORE_PENALTY (3) tries, capped at 50 points subtracted
-    //     d2.Alternatively, sync up with stickman
-    //        a) Stickman alive: 50 points
-    //        b) Stickman dead: 0 points
-    //        c) Stickman has 5 limbs (left/right hand, left/right leg, half torso), each limb missing is -10 points
+    //     
     // 2. If the word is skipped, no points awarded
 
     const calculateWordScore = useCallback((wordData: ProgressData): number => {
@@ -299,7 +296,7 @@ const EndedText: React.FC<{
                                         <Td>
                                             {wordPlayerData[word].number + 1}
                                         </Td>
-                                        <Td>{wordPlayerData[word].word}</Td>
+                                        <Td>{wordPlayerData[word].word} {wordPlayerData[word].word !== word ? `(${word})` : ``}</Td>
                                         <Td isNumeric>
                                             {
                                                 wordPlayerData[word]

@@ -4994,11 +4994,23 @@ transformation
 transportation
 
 `;
+const fs = require("fs");
 
 const words = wordString.split("\n").filter((word) => {
     const cleaned = word.trim().toLowerCase();
     if (cleaned.length > 2 && !cleaned.includes("-")) return word;
 });
+
+const otherAcceptedWords = JSON.parse(fs.readFileSync("unformattedwords.json", 'utf-8')
+)
+const otherAcceptedWordsArray = (otherAcceptedWords).map(otherWordObj => otherWordObj.word)
+const allAcceptedWords = [...new Set([...words, ...otherAcceptedWordsArray])]
+
+const acceptedObj = {}
+allAcceptedWords.forEach(word => acceptedObj[word] = 1)
+fs.writeFile("words_dictionary.json", JSON.stringify( acceptedObj ), () => {});
+
+
 const wordObj = {};
 const byLength = {};
 words.forEach((word) => {
@@ -5022,5 +5034,4 @@ words.forEach((word) => {
 //     }
 // });
 
-const fs = require("fs");
-fs.writeFile("words.json", JSON.stringify({ byLength, words }), () => {});
+// fs.writeFile("words.json", JSON.stringify({ byLength, words }), () => {});

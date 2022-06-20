@@ -63,14 +63,14 @@ export default function Nav() {
                                     <SunIcon />
                                 )}
                             </Button>
-                            <IconButton
+                            {/* <IconButton
                                 aria-label="Settings"
                                 icon={<SettingsIcon />}
                             />
                             <IconButton
                                 aria-label="FAQ"
                                 icon={<QuestionIcon />}
-                            />
+                            /> */}
                             {/* <Menu>
                                 <MenuButton
                                     as={Button}
