@@ -1,4 +1,4 @@
-import { Box, Heading, Progress, Stack, Text } from "@chakra-ui/react";
+import { Box, Heading, Stack, Text } from "@chakra-ui/react";
 import React from "react";
 import { useEffect, useState } from "react";
 import AnimatedProgress from "../animated/AnimatedProgress";
@@ -27,7 +27,7 @@ const WordBox: React.FC<{
                 timeTaken: timeTaken,
             }));
         }
-    }, [progress]);
+    }, [progress, setPlayerData, timeTaken]);
 
     // Change the 'your word is' to include the chars that the user entered\
     let [displayWord, setDisplayWord] = useState(word);

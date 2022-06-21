@@ -2,7 +2,7 @@
 
 import { animate } from "framer-motion";
 import React, { useEffect, useRef } from "react";
-import { Box, Text } from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 
 const Counter: React.FC<{ from: number; to: number }> = ({ from, to }) => {
     const nodeRef = useRef<HTMLDivElement>(null);

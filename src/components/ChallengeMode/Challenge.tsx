@@ -126,8 +126,7 @@ const Challenge: React.FC = () => {
         // for HARDCORE mode, words from 7-14 characters are allowed.
 
         let randomWord = "";
-        do {
-            console.log({ previousWords });
+        do {            
             const wordLength =
                 gameMode === 0
                     ? Math.floor(Math.random() * (7 - 3)) + 3
@@ -298,8 +297,7 @@ const Challenge: React.FC = () => {
                     checkWordArray.push(char);
                 }
             });
-            const checkWord = checkWordArray.join("");
-            console.log(`Checking word ${checkWord}...`);
+            const checkWord = checkWordArray.join("");            
             // check if the word exists in gameData
 
             const exists = acceptedWords?.[checkWord]; // use the master list

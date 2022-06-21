@@ -2,7 +2,7 @@ import {
     Box,
     Button,
     Heading,
-    SimpleGrid,
+    
     Stack,
     Table,
     TableCaption,
@@ -15,7 +15,6 @@ import {
     Thead,
     Tr,
     useColorModeValue,
-
 } from "@chakra-ui/react";
 
 import React, { useEffect, useState } from "react";
@@ -26,7 +25,11 @@ import EndedStickmenList from "../Stickmen/EndedStickmenList";
 import { PlayerData, ProgressData } from "./Challenge";
 import domtoimage from "dom-to-image";
 export const TRIES_BEFORE_PENALTY = 2;
-const convertToImage = async (el: HTMLElement, imageFileName: string, bgcolor: string) => {
+const convertToImage = async (
+    el: HTMLElement,
+    imageFileName: string,
+    bgcolor: string
+) => {
     // const canvas = await html2canvas(el);
     // const dataUrl = canvas.toDataURL("image/png", 1.0);
     // const blob = await (await fetch(dataUrl)).blob();
@@ -36,9 +39,6 @@ const convertToImage = async (el: HTMLElement, imageFileName: string, bgcolor: s
     const blob = await domtoimage.toBlob(el, {
         bgcolor,
     });
-
-    
-
 
     return new File([blob], imageFileName, { type: blob.type });
 };
@@ -55,7 +55,7 @@ const EndedText: React.FC<{
     //        Alternatively, 1 point every 1/10 second under 5 seconds
     //        Maximum time bonus: 50 points
     //     d. Number of tries: Subtract 10 points for each try over TRIES_BEFORE_PENALTY (3) tries, capped at 50 points subtracted
-    //     
+    //
     // 2. If the word is skipped, no points awarded
 
     const calculateWordScore = useCallback((wordData: ProgressData): number => {
@@ -143,7 +143,7 @@ const EndedText: React.FC<{
     }, [totalScore]);
 
     const bgcolor = useColorModeValue("white", "black");
-    const share = useCallback( async () => {
+    const share = useCallback(async () => {
         try {
             const image = await convertToImage(
                 document.getElementById("capture") as HTMLElement,
@@ -160,7 +160,7 @@ const EndedText: React.FC<{
         } catch (e) {
             console.log(e);
         }
-    }, [bgcolor, convertToImage, totalScore]);
+    }, [bgcolor, totalScore]);
 
     return (
         <Stack textAlign={"center"} spacing={3}>
@@ -207,19 +207,10 @@ const EndedText: React.FC<{
                                     New highscore! Previous: {previousHigh}{" "}
                                 </Text>
                             )}
-                        </Box>
-                        {/* <Box>
-                    <Text fontSize={"sm"} fontWeight="light"  display="inline-block" mr={1}>
-                        That's better than
-                    </Text>
-                    <Counter from={0} to={75}  />
-                    <Text fontSize={"sm"} fontWeight="light"  display="inline-block">
-                        % of players!
-                    </Text>
-                </Box> */}
+                        </Box>                       
                     </Box>
                     <EndedStickmenList wordPlayerData={wordPlayerData} />
-                    <SimpleGrid columns={2} spacing={6} fontSize="xl">
+                    {/* <SimpleGrid columns={2} spacing={6} fontSize="xl">
                         <Box textAlign="right">
                             <Text>You took</Text>
                         </Box>
@@ -228,23 +219,9 @@ const EndedText: React.FC<{
                                 {playerData.timeTaken}s
                             </Text>
                         </Box>
-                        {/* <Box textAlign="right">
-                    <Text>Correct words</Text>
-                </Box>
-                <Box textAlign="left">
-                    <Text fontWeight="semibold">
-                        {playerData.wordsCorrect.length}
-                    </Text>
-                </Box>
-                <Box textAlign="right">
-                    <Text>Skipped words</Text>
-                </Box>
-                <Box textAlign="left">
-                    <Text fontWeight="semibold">
-                        {playerData.wordsSkipped.length}
-                    </Text>
-                </Box> */}
-                    </SimpleGrid>
+                        
+                    </SimpleGrid> */}
+                    <Text textAlign="center" fontSize="xl"> You took <b>{playerData.timeTaken}s</b></Text>                   
                 </Stack>
             </Box>
             <Box textAlign="center">
@@ -296,7 +273,12 @@ const EndedText: React.FC<{
                                         <Td>
                                             {wordPlayerData[word].number + 1}
                                         </Td>
-                                        <Td>{wordPlayerData[word].word} {wordPlayerData[word].word !== word ? `(${word})` : ``}</Td>
+                                        <Td>
+                                            {wordPlayerData[word].word}{" "}
+                                            {wordPlayerData[word].word !== word
+                                                ? `(${word})`
+                                                : ``}
+                                        </Td>
                                         <Td isNumeric>
                                             {
                                                 wordPlayerData[word]

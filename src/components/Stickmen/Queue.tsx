@@ -1,12 +1,5 @@
-import {
-    Box,
-    Flex,
-    HStack,
-    SimpleGrid,
-    Spacer,
-    useColorModeValue,
-} from "@chakra-ui/react";
-import React, { useEffect, useState } from "react";
+import { Box, Flex, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import React from "react";
 
 import stagefull from "../../assets/stickman/hanger-full.svg";
 import stage1 from "../../assets/stickman/hanger-1.svg";
@@ -16,36 +9,14 @@ import stage4 from "../../assets/stickman/hanger-4.svg";
 import stage5 from "../../assets/stickman/hanger-5.svg";
 import stageempty from "../../assets/stickman/hanger-empty.svg";
 import { calculateStickmanStage } from "../../utils/functions";
-// async sleep
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const images = [stagefull, stage1, stage2, stage3, stage4];
 const Queue: React.FC<{
     numLeft: number;
     timesTried: number;
 }> = ({ numLeft, timesTried }) => {
-    const defaultStickMenToDisplay = numLeft > 10 ? 10 : numLeft;
-
     let stage = calculateStickmanStage(timesTried);
     // stage 1 to 5
-
-    const [stickMenToDisplay, setStickMenToDisplay] = useState(
-        defaultStickMenToDisplay
-    );
-    const [hangerSVG, setHangerSVG] = useState(`hanger-full`);
-    const animateNext = async () => {
-        // 1) set hanger to empty
-        // 2) set last child to invisible
-        // 3) spawn in a child animate shifting over to the middle
-        // 3) replace hanger with full
-        // 4) hide last child
-        // 5) translate queue over x px
-        // 6) change stickmenToDisplayNumber and reset translate
-        setHangerSVG(`hanger`);
-        await sleep(100);
-        setHangerSVG(`hanger-full`);
-        setStickMenToDisplay(stickMenToDisplay - 1);
-    };
 
     const invert = useColorModeValue(false, true);
 
@@ -109,6 +80,7 @@ const Queue: React.FC<{
                 <Box width="50px" height="50px">
                     {images.map((image, index) => (
                         <object
+                            aria-label="stickman"
                             key={index}
                             data={image}
                             type="image/svg+xml"
@@ -124,7 +96,7 @@ const Queue: React.FC<{
                     ))}
                     {stage === 5 && (
                         <object
-                            
+                            aria-label="stickman"
                             data={stage5}
                             type="image/svg+xml"
                             style={{
@@ -132,24 +104,24 @@ const Queue: React.FC<{
                                 height: "50px",
                                 width: "50px",
                                 // only hide if stage is greater than index
-                               
+
                                 filter: `invert(${invert ? "100" : "0"}%)`,
                             }}
                         />
                     )}
                     <object
-                            
-                            data={stageempty}
-                            type="image/svg+xml"
-                            style={{
-                                position: "absolute",
-                                height: "50px",
-                                width: "50px",
-                                // only hide if stage is greater than index
-                               
-                                filter: `invert(${invert ? "100" : "0"}%)`,
-                            }}
-                        />
+                        aria-label="stickman"
+                        data={stageempty}
+                        type="image/svg+xml"
+                        style={{
+                            position: "absolute",
+                            height: "50px",
+                            width: "50px",
+                            // only hide if stage is greater than index
+
+                            filter: `invert(${invert ? "100" : "0"}%)`,
+                        }}
+                    />
                 </Box>
             </Box>
         </SimpleGrid>

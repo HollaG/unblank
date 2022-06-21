@@ -1,7 +1,7 @@
 // Thank you to https://github.com/chakra-ui/chakra-ui/issues/68
 
-import { Progress, useStyleConfig } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { Progress } from "@chakra-ui/react";
+
 
 const AnimatedProgress: React.FC<{ value: number, transitionDuration?: number }> = ({ value, transitionDuration = 300 }) => {
    

@@ -1,7 +1,7 @@
 import { HStack, PinInput, PinInputField } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { SyntheticEvent, useCallback } from "react";
-import { useEffect, useState } from "react";
+import React, {  useCallback } from "react";
+
 
 const animationKeyframes = [1, -1, -3, 3, 1, -1, -3, 3, 1];
 

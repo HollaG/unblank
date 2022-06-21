@@ -1,4 +1,4 @@
-import { Heading, Progress, Stack, Text } from "@chakra-ui/react";
+import { Heading, Stack, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import AnimatedProgress from "../animated/AnimatedProgress";
 
@@ -46,7 +46,7 @@ const CountdownBox: React.FC<{ startGame: () => void }> = ({ startGame }) => {
                 startGame();
             }
         };
-        const animation = requestAnimationFrame(step);
+        requestAnimationFrame(step);
     }, [startGame]);
 
     return (
