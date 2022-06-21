@@ -72,25 +72,9 @@ and (orientation: landscape)">
 <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener("load", function () {
-                navigator.serviceWorker.register("sw.js").then(
-                    function (registration) {
-                        // Registration was successful
-                        console.log(
-                            "ServiceWorker registration successful with scope: ",
-                            registration.scope
-                        );
-                    },
-                    function (err) {
-                        // registration failed :(
-                        console.log("ServiceWorker registration failed: ", err);
-                    }
-                );
-            });
-        }
-    </script>
+    <script src="%PUBLIC_URL%/sw.js"></script>
+        
+
 </body>
 
 </html>
