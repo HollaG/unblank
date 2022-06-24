@@ -29,6 +29,7 @@ export const CHALLENGE_WORDS_NUMBER = 24;
 
 export interface PlayerData {
     timeTaken: number;
+    mode: number;
     wordsCorrect: string[];
     wordsSkipped: string[];
     progressData: ProgressData[];
@@ -92,7 +93,9 @@ const Challenge: React.FC = () => {
             answerIsWrong: false,
             currentWordNumber: 1,
             playerData: {
+                startTimestamp: 0,
                 timeTaken: 0,
+                mode: 0,
                 wordsCorrect: [],
                 wordsSkipped: [],
                 progressData: [],
@@ -360,7 +363,13 @@ const Challenge: React.FC = () => {
             inputRef.current.focus();
         }
         isMobile && wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [gameIsReady, wordBoxRef, inputRef]);
+        setPlayerData((prev) => ({
+            ...prev,
+            mode: gameMode,
+            startTimestamp: Date.now(),
+        }));
+    }, [gameIsReady, gameMode, inputRef, wordBoxRef]);
+            
 
     const startGame = useCallback(() => {
         setGameStatus(2);

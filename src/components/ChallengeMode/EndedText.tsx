@@ -235,6 +235,9 @@ const EndedText: React.FC<{
                         {" "}
                         You took <b>{playerData.timeTaken}s</b>
                     </Text>
+                    <Text textAlign="center" fontWeight="light">
+                        {playerData.mode === 0 ? "Normal mode" : "Hardcore mode"}
+                    </Text>
                 </Stack>
             </Box>
             <Box textAlign="center">
