@@ -2,7 +2,6 @@ import {
     Box,
     Button,
     Heading,
-    
     Stack,
     Table,
     TableCaption,
@@ -17,7 +16,7 @@ import {
     useColorModeValue,
 } from "@chakra-ui/react";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useCallback } from "react";
 import ReactCanvasConfetti from "react-canvas-confetti";
 import Counter from "../animated/Counter";
@@ -162,8 +161,19 @@ const EndedText: React.FC<{
         }
     }, [bgcolor, totalScore]);
 
+    const endRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        let timeout = setTimeout(() => {
+            if (endRef && endRef.current) {
+                endRef.current.scrollIntoView({
+                    behavior: "smooth",
+                });
+            }
+        }, 350);
+        return () => clearTimeout(timeout);
+    }, [endRef]);
     return (
-        <Stack textAlign={"center"} spacing={3}>
+        <Stack textAlign={"center"} spacing={3} ref={endRef}>
             <Box id="capture" py={3}>
                 <Stack>
                     <Box>
@@ -207,7 +217,7 @@ const EndedText: React.FC<{
                                     New highscore! Previous: {previousHigh}{" "}
                                 </Text>
                             )}
-                        </Box>                       
+                        </Box>
                     </Box>
                     <EndedStickmenList wordPlayerData={wordPlayerData} />
                     {/* <SimpleGrid columns={2} spacing={6} fontSize="xl">
@@ -221,7 +231,10 @@ const EndedText: React.FC<{
                         </Box>
                         
                     </SimpleGrid> */}
-                    <Text textAlign="center" fontSize="xl"> You took <b>{playerData.timeTaken}s</b></Text>                   
+                    <Text textAlign="center" fontSize="xl">
+                        {" "}
+                        You took <b>{playerData.timeTaken}s</b>
+                    </Text>
                 </Stack>
             </Box>
             <Box textAlign="center">

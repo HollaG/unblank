@@ -221,7 +221,9 @@ const Challenge: React.FC = () => {
     const progressGame = useCallback(() => {
         if (currentWordNumber === CHALLENGE_WORDS_NUMBER) {
             // game has ended!
-            setGameStatus(3);
+            setGameStatus(3);       
+            
+
         } else {
             setEnteredAnswer([]);
             chooseNewWord();
@@ -538,6 +540,7 @@ const Challenge: React.FC = () => {
                 <EndedText
                     playerData={playerData}
                     wordPlayerData={wordPlayerData}
+                    
                 />
             )}
         </Stack>
