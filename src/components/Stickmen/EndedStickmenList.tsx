@@ -21,6 +21,15 @@ const svgStyle = {
     transform: "scale(1.5)",
 };
 const stages = [StickFull, Stick1, Stick2, Stick3, Stick4, Stick5];
+
+const widthBreakpoints = {
+    // base: '50px',
+    // md: "75px"
+}
+const marginBreakpoints = {
+    // base: '0px',
+    // md: "-12.5px"
+}
 const EndedStickmenList: React.FC<{
     wordPlayerData: { [key: string]: ProgressData };
 }> = ({ wordPlayerData }) => {
@@ -30,10 +39,18 @@ const EndedStickmenList: React.FC<{
     return (
         <Center>
             <SimpleGrid columns={{
-                base: 6,
+                base: 4,
+                sm: 6,
                 md: 8,
                 lg: 12
-            }} width="fit-content">
+            }} width="fit-content" 
+            spacing={{
+                base: 2,
+                sm: 2,
+                md: 4,
+                lg: 8
+            }}
+            >
                 {Object.keys(wordPlayerData)
                     .sort(
                         (a, b) =>
@@ -50,7 +67,7 @@ const EndedStickmenList: React.FC<{
                         const Stickman = stages[stage];
                         if (skipped) {
                             return (
-                                <Box key={index} color={skippedColor}>
+                                <Box key={index} color={skippedColor} width="50px">
                                     <Stickman
                                         {...svgStyle}
                                         color={'skippedColor'}
@@ -60,7 +77,7 @@ const EndedStickmenList: React.FC<{
                             );
                         } else {
                             return (
-                                <Box key={index} color={invert}>
+                                <Box key={index} color={invert} width="50px">
                                     <Stickman
                                         {...svgStyle}
                                         color={invert}
