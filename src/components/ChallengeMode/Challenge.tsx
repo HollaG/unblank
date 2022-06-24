@@ -23,6 +23,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserView, isMobile, MobileView } from "react-device-detect";
 import Queue from "../Stickmen/Queue";
+import { vibrateError, vibrateSuccess } from "../../functions";
 
 export const CHALLENGE_WORDS_NUMBER = 24;
 
@@ -328,6 +329,7 @@ const Challenge: React.FC = () => {
                 // doesn't exist
                 // set to red
                 setAnswerIsWrong(true);
+                vibrateError(navigator)
                 setEnteredAnswer([]);
             }
         }
