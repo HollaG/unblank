@@ -32,7 +32,7 @@ const CharacterInput: React.FC<{
     // Actual behaviour: User clicks start game --> input field appears but is not focused --> only when game actually starts after countdown does input field get focused
     useEffect(() => {
         if (inputRef.current && correctAnswer[0] === "") {
-            // we only want this to fire when correctAnswer === [""], but we can't compare arrays like this.
+            // we only want this to fire when correctAnswer === [""] (this is when the game is starting), but we can't compare arrays like this.
             inputRef.current.focus();
         }
     }, [inputRef, correctAnswer]);
