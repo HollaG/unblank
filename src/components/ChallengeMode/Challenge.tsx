@@ -10,6 +10,7 @@ import {
     Flex,
     Spacer,
     Link,
+    Collapse,
 } from "@chakra-ui/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CharacterInput from "./CharacterInput";
@@ -350,15 +351,17 @@ const Challenge: React.FC = () => {
         if (!gameIsReady) return;
         setGameStatus(1);
         setCorrectAnswer([""]);
-
+        if (inputRef && inputRef.current) {
+            console.log("Pre-game focusing");
+            inputRef.current.focus();
+        }
         isMobile && wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, [gameIsReady, wordBoxRef]);
+    }, [gameIsReady, wordBoxRef, inputRef]);
 
     const startGame = useCallback(() => {
         setGameStatus(2);
-        // for (let i = 0; i < 100; i++) {
+
         chooseNewWord();
-        // }
     }, [chooseNewWord]);
     /* Reset game back to the start */
     const reset = useCallback(() => {
@@ -382,43 +385,52 @@ const Challenge: React.FC = () => {
     const [widthLargerThan800] = useMediaQuery("(min-width: 800px)");
 
     return (
-        <Stack spacing={4} justifyContent="center" pt={6}>
-            <Box>
-                <Heading textAlign="center" px={2}>
-                    {" "}
-                    {gameMode === 0 ? "Normal" : "Hardcore"} mode{" "}
-                </Heading>
+        <Stack spacing={4} justifyContent="center">
+            <Collapse in={!inProgress}>
+                <Stack spacing={4} justifyContent="center" pt={6}>
+                    <Box>
+                        <Heading textAlign="center" px={2}>
+                            {" "}
+                            {gameMode === 0 ? "Normal" : "Hardcore"} mode{" "}
+                        </Heading>
 
-                {
-                    <Text mt={0} textAlign="center" fontWeight="light" px={2}>
-                        {" "}
-                        {gameMode === 0
-                            ? "3-7 character words"
-                            : "7-14 character words"}
-                        {" provided by "}
-                    </Text>
-                }
-                <Text textAlign="center">
-                    <Link href="https://wordfrequency.info" isExternal>
-                        wordfrequency.info
-                    </Link>
-                </Text>
-            </Box>
-            <Center>
-                <Button
-                    onClick={() => {
-                        if (gameMode === 0) {
-                            setGameMode(1);
-                        } else {
-                            setGameMode(0);
+                        {
+                            <Text
+                                mt={0}
+                                textAlign="center"
+                                fontWeight="light"
+                                px={2}
+                            >
+                                {" "}
+                                {gameMode === 0
+                                    ? "3-7 character words"
+                                    : "7-14 character words"}
+                                {" provided by "}
+                            </Text>
                         }
-                    }}
-                    disabled={inProgress}
-                >
-                    {" "}
-                    Change mode{" "}
-                </Button>
-            </Center>
+                        <Text textAlign="center">
+                            <Link href="https://wordfrequency.info" isExternal>
+                                wordfrequency.info
+                            </Link>
+                        </Text>
+                    </Box>
+                    <Center>
+                        <Button
+                            onClick={() => {
+                                if (gameMode === 0) {
+                                    setGameMode(1);
+                                } else {
+                                    setGameMode(0);
+                                }
+                            }}
+                            disabled={inProgress}
+                        >
+                            {" "}
+                            Change mode{" "}
+                        </Button>
+                    </Center>
+                </Stack>
+            </Collapse>
             <Box
                 backgroundColor={mainBoxBackgroundColor}
                 w="100%"

@@ -1,6 +1,6 @@
 import { HStack, PinInput, PinInputField } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 
 const animationKeyframes = [1, -1, -3, 3, 1, -1, -3, 3, 1];
 
@@ -18,12 +18,14 @@ const CharacterInput: React.FC<{
     enteredAnswer,
     setEnteredAnswer,
     answerIsWrong,
-}) => {
-    if (inputRef.current && !enteredAnswer.length) {
-        console.log("Focusing input...");
-        inputRef.current.focus();
-    }
+}) => {    
 
+    useEffect(() => {
+        if (inputRef.current && !enteredAnswer.length) {
+            console.log("Focusing input...");
+            inputRef.current.focus();
+        }
+    }, [inputRef, enteredAnswer]);
     const onChange = useCallback(
         (e: string) => {
             setEnteredAnswer(e.toLowerCase().split(""));
@@ -62,13 +64,13 @@ const CharacterInput: React.FC<{
                 >
                     {correctAnswer.map((char, index) => (
                         <PinInputField
+                            aria-label="Enter your answer"
                             autoComplete="off"
                             onKeyDown={onSpacePressed}
                             ref={index === 0 ? inputRef : undefined}
                             key={index}
                         />
                     ))}
-                    
                 </PinInput>
             </HStack>{" "}
         </motion.div>
