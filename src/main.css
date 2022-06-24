@@ -1,15 +1,16 @@
-/* https://stackoverflow.com/questions/42025632/how-to-detect-only-with-css-mobile-screens */
-/* @media only screen and (hover: none) and (pointer: coarse) { */
-html {
-    min-height: calc(100% + 64px + 2.5rem + 40px);
+/* Note, this https://stackoverflow.com/questions/42025632/how-to-detect-only-with-css-mobile-screens doesn't work on mobile sometimes because the browser might mis-report the mobile browser as having a mouse.*/
 
-}
-body {
-    height: 100%;
-}
+@media (max-width: 960px) {
+    /* tablet, landscape iPad, lo-res laptops ands desktops */
+    /* Fullheight + navbar + everything up until the main word box */
+    /* html {
+        min-height: calc(100% + 64px + 2.5rem + 131.2px + 1rem);
+    }
+    body {
+        height: 100%;
+    }
 
-#root {
-    height: 100%;
+    #root {
+        height: 100%;
+    } */
 }
-
-/* } */
