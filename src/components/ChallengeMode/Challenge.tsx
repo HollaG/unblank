@@ -358,8 +358,7 @@ const Challenge: React.FC = () => {
         if (!gameIsReady) return;
         setGameStatus(1);
         setCorrectAnswer([""]);
-        if (inputRef && inputRef.current) {
-            console.log("Pre-game focusing");
+        if (inputRef && inputRef.current) {          
             inputRef.current.focus();
         }
         isMobile && wordBoxRef.current?.scrollIntoView({ behavior: "smooth" });

@@ -162,6 +162,7 @@ const EndedText: React.FC<{
     }, [bgcolor, totalScore]);
 
     const endRef = useRef<HTMLDivElement>(null);
+   
     useEffect(() => {
         let timeout = setTimeout(() => {
             if (endRef && endRef.current) {
