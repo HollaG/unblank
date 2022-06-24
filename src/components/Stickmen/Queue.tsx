@@ -1,4 +1,10 @@
-import { Box, Flex, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Flex,
+    SimpleGrid,
+    useColorModeValue,
+} from "@chakra-ui/react";
 import React from "react";
 
 import stagefull from "../../assets/stickman/hanger-full.svg";
@@ -9,12 +15,15 @@ import stage4 from "../../assets/stickman/hanger-4.svg";
 import stage5 from "../../assets/stickman/hanger-5.svg";
 import stageempty from "../../assets/stickman/hanger-empty.svg";
 import { calculateStickmanStage } from "../../utils/functions";
+import { BrowserView, MobileView } from "react-device-detect";
 
 const images = [stagefull, stage1, stage2, stage3, stage4];
 const Queue: React.FC<{
     numLeft: number;
     timesTried: number;
-}> = ({ numLeft, timesTried }) => {
+    skipWord: () => void;
+    gameStatus: number;
+}> = ({ numLeft, timesTried, skipWord, gameStatus }) => {
     let stage = calculateStickmanStage(timesTried);
     // stage 1 to 5
 
@@ -47,9 +56,10 @@ const Queue: React.FC<{
             spacing={0}
             justifyContent="center"
             height="50px"
+            alignItems="center"
         >
-            <Flex flexDirection="row-reverse" width="100%" overflow="visible">
-                {/* <Box overflow={"visible"} whiteSpace="nowrap">
+            {/* <Flex flexDirection="row-reverse" width="100%" overflow="visible"> */}
+            {/* <Box overflow={"visible"} whiteSpace="nowrap">
                     {Array.from(Array(stickMenToDisplay).keys()).map((i) => (
                         <Box
                             display="inline-block"
@@ -75,7 +85,23 @@ const Queue: React.FC<{
                         </Box>
                     ))}
                 </Box> */}
-            </Flex>
+
+            {/* </Flex> */}
+            <BrowserView> 
+            </BrowserView>
+            <MobileView>
+                <Box>
+                    <Button
+                        onClick={() => skipWord()}
+                        disabled={gameStatus !== 2}
+                        size="md"
+                        colorScheme="blue"
+                    >
+                        Skip
+                        {/* Note: space bar onkeydown detection doesn't work on mobile. */}
+                    </Button>
+                </Box>
+            </MobileView>
             <Box height="50px" margin="auto">
                 <Box width="50px" height="50px">
                     {images.map((image, index) => (
@@ -124,6 +150,19 @@ const Queue: React.FC<{
                     />
                 </Box>
             </Box>
+            <MobileView>
+                <Box>
+                    <Button
+                        onClick={() => skipWord()}
+                        disabled={gameStatus !== 2}
+                        size="md"
+                        colorScheme="blue"
+                    >
+                        Skip
+                        {/* Note: space bar onkeydown detection doesn't work on mobile. */}
+                    </Button>
+                </Box>
+            </MobileView>
         </SimpleGrid>
     );
 };

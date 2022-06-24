@@ -126,7 +126,7 @@ const Challenge: React.FC = () => {
         // for HARDCORE mode, words from 7-14 characters are allowed.
 
         let randomWord = "";
-        do {            
+        do {
             const wordLength =
                 gameMode === 0
                     ? Math.floor(Math.random() * (7 - 3)) + 3
@@ -297,7 +297,7 @@ const Challenge: React.FC = () => {
                     checkWordArray.push(char);
                 }
             });
-            const checkWord = checkWordArray.join("");            
+            const checkWord = checkWordArray.join("");
             // check if the word exists in gameData
 
             const exists = acceptedWords?.[checkWord]; // use the master list
@@ -384,20 +384,25 @@ const Challenge: React.FC = () => {
     return (
         <Stack spacing={4} justifyContent="center" pt={6}>
             <Box>
-                <Heading textAlign="center">
+                <Heading textAlign="center" px={2}>
                     {" "}
                     {gameMode === 0 ? "Normal" : "Hardcore"} mode{" "}
                 </Heading>
 
                 {
-                    <Text mt={0} textAlign="center" fontWeight="light">
+                    <Text mt={0} textAlign="center" fontWeight="light" px={2}>
                         {" "}
                         {gameMode === 0
                             ? "3-7 character words"
                             : "7-14 character words"}
-                        {" provided by "}<Link href='https://wordfrequency.info' isExternal>wordfrequency.info</Link>
+                        {" provided by "}
                     </Text>
                 }
+                <Text textAlign="center">
+                    <Link href="https://wordfrequency.info" isExternal>
+                        wordfrequency.info
+                    </Link>
+                </Text>
             </Box>
             <Center>
                 <Button
@@ -443,6 +448,8 @@ const Challenge: React.FC = () => {
                             timesTried={
                                 wordPlayerData[currentWord]?.numberTimesTried
                             }
+                            skipWord={skipWord}
+                            gameStatus={gameStatus}
                         />
                     </>
                 )}
@@ -465,7 +472,7 @@ const Challenge: React.FC = () => {
 
             {inProgress && (
                 <Stack textAlign="center">
-                    <Text> Type the missing characters below </Text>
+                    <Text> Type the missing characters below.</Text>
                     <CharacterInput
                         correctAnswer={correctAnswer}
                         inputRef={inputRef}
@@ -475,7 +482,7 @@ const Challenge: React.FC = () => {
                         skipWord={skipWord}
                     />
                     <Box>
-                        <MobileView>
+                        {/* <MobileView>
                             <SkipButtonPortal>
                                 <Flex>
                                     <Button
@@ -483,7 +490,7 @@ const Challenge: React.FC = () => {
                                         disabled={gameStatus !== 2}
                                     >
                                         Skip
-                                        {/* Note: space bar onkeydown detection doesn't work on mobile. */}
+                                        
                                     </Button>
                                     <Spacer/>
                                     <Button
@@ -491,11 +498,11 @@ const Challenge: React.FC = () => {
                                         disabled={gameStatus !== 2}
                                     >
                                         Skip
-                                        {/* Note: space bar onkeydown detection doesn't work on mobile. */}
+                                       
                                     </Button>
                                 </Flex>
                             </SkipButtonPortal>
-                        </MobileView>
+                        </MobileView> */}
                         <BrowserView>
                             <Button
                                 onClick={() => skipWord()}
@@ -508,7 +515,7 @@ const Challenge: React.FC = () => {
                 </Stack>
             )}
             {gameStatus === 0 && (
-                <Text textAlign="center">
+                <Text textAlign="center" px={2}>
                     {" "}
                     Any correct filler characters will be accepted. For example,
                     for the word B _ _ T, both "O, A" and "E, A" will be

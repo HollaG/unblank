@@ -1,7 +1,6 @@
 import { HStack, PinInput, PinInputField } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import React, {  useCallback } from "react";
-
+import React, { useCallback } from "react";
 
 const animationKeyframes = [1, -1, -3, 3, 1, -1, -3, 3, 1];
 
@@ -20,21 +19,25 @@ const CharacterInput: React.FC<{
     setEnteredAnswer,
     answerIsWrong,
 }) => {
-    if (inputRef.current && !enteredAnswer.length) inputRef.current.focus();
+    if (inputRef.current && !enteredAnswer.length) {
+        console.log("Focusing input...");
+        inputRef.current.focus();
+    }
 
-    const onChange = useCallback((e: string) => {
-       
-        setEnteredAnswer(e.toLowerCase().split(""))
-    }, [setEnteredAnswer]);
+    const onChange = useCallback(
+        (e: string) => {
+            setEnteredAnswer(e.toLowerCase().split(""));
+        },
+        [setEnteredAnswer]
+    );
 
-    
     // Doesn't work on mobile!!!
     const onSpacePressed = useCallback(
         (e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === " ") {
                 // spacebar was pressed, skip
                 skipWord();
-                e.preventDefault()
+                e.preventDefault();
             }
         },
         [skipWord]
@@ -59,11 +62,13 @@ const CharacterInput: React.FC<{
                 >
                     {correctAnswer.map((char, index) => (
                         <PinInputField
+                            autoComplete="off"
                             onKeyDown={onSpacePressed}
                             ref={index === 0 ? inputRef : undefined}
                             key={index}
                         />
                     ))}
+                    
                 </PinInput>
             </HStack>{" "}
         </motion.div>

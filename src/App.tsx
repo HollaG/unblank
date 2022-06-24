@@ -8,6 +8,7 @@ import "@fontsource/roboto-mono/700.css";
 import Nav from "./components/Navbar";
 import Challenge from "./components/ChallengeMode/Challenge";
 import theme from "./theme";
+import DebugMode from "./components/DebugMode";
 
 export const MAX_WIDTH = 800;
 
