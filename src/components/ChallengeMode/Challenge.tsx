@@ -387,7 +387,7 @@ const Challenge: React.FC = () => {
     return (
         <Stack spacing={4} justifyContent="center">
             <Collapse in={!inProgress}>
-                <Stack spacing={4} justifyContent="center" pt={6}>
+                <Stack spacing={4} justifyContent="center" pt={5} pb={1}>
                     <Box>
                         <Heading textAlign="center" px={2}>
                             {" "}

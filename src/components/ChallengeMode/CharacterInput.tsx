@@ -20,17 +20,33 @@ const CharacterInput: React.FC<{
     answerIsWrong,
 }) => {    
 
+
+    
+    // This code is not in useEffect because if it was, every time the # of input field changes,
+    // focus will be lost.
+    if (inputRef.current && !enteredAnswer.length) {
+        console.log("Focusing input...");
+        inputRef.current.focus();
+    }
+
+    // This part is in useEffect because the ref might not be set on first render,
+    // i.e. when the user first clicks start game.
+    // Without this code,
+    // Expected behaviour: User clicks start game --> input field is focused
+    // Actual behaviour: User clicks start game --> input field appears but is not focused --> only when game actually starts after countdown does input field get focused
     useEffect(() => {
-        if (inputRef.current && !enteredAnswer.length) {
-            console.log("Focusing input...");
+        if (inputRef.current && correctAnswer[0] === "") { // we only want this to fire when correctAnswer === [""], but we can't compare arrays like this.
+            console.log("Focusing input for the firs ttime...");
             inputRef.current.focus();
         }
-    }, [inputRef, enteredAnswer]);
+    }, [inputRef, correctAnswer]);
+
+    // Disallow entering any answers when correctAnswer = [""] (game hasn't started)
     const onChange = useCallback(
         (e: string) => {
-            setEnteredAnswer(e.toLowerCase().split(""));
+            correctAnswer[0] !== "" && setEnteredAnswer(e.toLowerCase().split(""));
         },
-        [setEnteredAnswer]
+        [setEnteredAnswer, correctAnswer]
     );
 
     // Doesn't work on mobile!!!
